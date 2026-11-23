@@ -1,0 +1,6 @@
+{
+  "name": "Bạn Viết",
+  "description": "Người bạn đồng hành giúp học sinh lớp 5 tự quan sát, lập dàn ý, tự viết và tự chỉnh sửa bài văn tả người theo chương trình Tiếng Việt 5.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
