@@ -10,9 +10,11 @@ import {
   MessageCircle,
   Plus,
   Send,
+  Sparkles,
   Trash2,
 } from 'lucide-react';
 import { OutlineData, WritingProject } from '../types';
+import { AI_LIMIT_REACHED_LABEL } from '../utils/khoTuNgu';
 import {
   MAX_MESSAGE_CHARS,
   getDisplayPersonName,
@@ -28,14 +30,19 @@ const WORD_TOPICS = [
   'Tính tình',
   'Hoạt động hằng ngày',
   'Tình cảm của em',
+  'Mở bài / Kết bài / Từ nối',
 ];
 
 interface Step2OutlineProps {
   project: WritingProject;
+  aiEnabled?: boolean;
+  aiRemainingToday?: number;
+  aiAvailableForHints?: boolean;
   onUpdateOutline: (next: OutlineData) => void;
   onSendChat: (message: string) => Promise<void>;
   onFetchWordBank: (topic: string) => Promise<void>;
-  onToggleSavedWord: (word: string) => void;
+  onOpenKhoTu: (topicLabel: string) => void;
+  onToggleSavedWord: (word: string, fromKho?: boolean) => void;
   onCheckOutline: () => Promise<void>;
   loadingChat: boolean;
   loadingWords: boolean;
@@ -47,9 +54,13 @@ interface Step2OutlineProps {
 
 export const Step2Outline: React.FC<Step2OutlineProps> = ({
   project,
+  aiEnabled = true,
+  aiRemainingToday = 0,
+  aiAvailableForHints = true,
   onUpdateOutline,
   onSendChat,
   onFetchWordBank,
+  onOpenKhoTu,
   onToggleSavedWord,
   onCheckOutline,
   loadingChat,
@@ -63,12 +74,15 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
   const [newPersonality, setNewPersonality] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [selectedTopic, setSelectedTopic] = useState(
-    project.suggestedWordTopic || WORD_TOPICS[0]
+    project.suggestedWordTopic && WORD_TOPICS.includes(project.suggestedWordTopic)
+      ? project.suggestedWordTopic
+      : WORD_TOPICS[0]
   );
 
   const personLabel = getDisplayPersonName(project);
   const canProceed = isStep2Complete(project);
   const check = project.outlineCheck;
+  const canAskAi = aiEnabled && aiAvailableForHints && aiRemainingToday > 0;
 
   const ngoaiCount = check
     ? check.so_chi_tiet_ngoai_hinh
@@ -109,7 +123,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = chatInput.trim();
-    if (!trimmed || loadingChat) return;
+    if (!trimmed || loadingChat || !canAskAi) return;
     setChatInput('');
     await onSendChat(trimmed);
   };
@@ -136,7 +150,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
         </div>
       )}
 
-      {/* Main 2-column desktop split: Left 7 cols Outline Diagram, Right 5 cols Bạn Viết Companion */}
+      {/* Main 2-column desktop split: Left 7 cols Outline Diagram, Right 5 cols Word Bank + Companion (always visible!) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 items-start">
         {/* LEFT: Visual 3-Part Outline Diagram */}
         <div className="lg:col-span-7 space-y-5">
@@ -334,29 +348,54 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
 
           {/* Outline Check Badges Section */}
           <section className="rounded-2xl bg-white border border-[#DDE7E2] p-5 sm:p-6 space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-3">
               <div>
                 <h2 className="text-xl font-bold text-[#1C2A24]">Huy hiệu kiểm tra dàn ý</h2>
                 <p className="text-[16px] text-[#4B6358]">
                   Không chấm điểm — chỉ giúp em xem dàn ý đã đủ ý để bắt đầu viết chưa.
                 </p>
               </div>
-              <button
-                type="button"
-                disabled={loadingCheck}
-                onClick={onCheckOutline}
-                className="inline-flex items-center justify-center gap-2 min-h-[48px] px-5 py-3 rounded-xl bg-[#0369A1] text-white font-semibold hover:bg-[#075985] disabled:opacity-60 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                {loadingCheck ? (
-                  <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                ) : (
-                  <Award className="w-5 h-5" aria-hidden="true" />
-                )}
-                <span>Kiểm tra dàn ý</span>
-              </button>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  disabled={!canAskAi || loadingCheck}
+                  onClick={onCheckOutline}
+                  className={`inline-flex items-center justify-center gap-2 min-h-[46px] px-4 py-2.5 rounded-xl text-[15px] font-semibold transition-colors ${
+                    canAskAi
+                      ? 'bg-[#0369A1] text-white hover:bg-[#075985] disabled:opacity-60 cursor-pointer'
+                      : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] opacity-75 cursor-not-allowed'
+                  }`}
+                >
+                  {loadingCheck ? (
+                    <Loader2 className="w-5 h-5 animate-spin shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Award className="w-5 h-5 shrink-0" aria-hidden="true" />
+                  )}
+                  {canAskAi ? (
+                    <span>
+                      Hỏi Bạn Viết kiểm tra{' '}
+                      <span className="font-normal tabular-nums">
+                        (còn {aiRemainingToday} lượt)
+                      </span>
+                    </span>
+                  ) : (
+                    <span>{AI_LIMIT_REACHED_LABEL}</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onOpenKhoTu('Mở bài / Kết bài / Từ nối')}
+                  className="inline-flex items-center justify-center gap-2 min-h-[46px] px-4 py-2.5 rounded-xl bg-[#ECFDF5] text-[#14532D] border border-[#86EFAC] text-[15px] font-semibold hover:bg-[#DCFCE7] transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Xem kho từ</span>
+                </button>
+              </div>
             </div>
 
-            {/* 3 Achievement Badges (dual-coded icon + label, no numeric grade) */}
+            {/* 3 Achievement Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div
                 className={`rounded-xl border p-4 flex items-start gap-3 ${
@@ -421,7 +460,11 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
 
             {check && (
               <MascotSpeech
-                title="Nhận xét dàn ý của Bạn Viết"
+                title={
+                  check.nguon === 'kho'
+                    ? 'Kiểm tra dàn ý & câu hỏi trong kho'
+                    : 'Nhận xét dàn ý của Bạn Viết'
+                }
                 tone={
                   check.du_3_phan &&
                   check.so_chi_tiet_ngoai_hinh >= 3 &&
@@ -452,12 +495,15 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                     ))}
                   </div>
                 )}
+                {check.thongBao && (
+                  <p className="mt-2 text-[14px] text-[#64748B] italic">{check.thongBao}</p>
+                )}
               </MascotSpeech>
             )}
           </section>
         </div>
 
-        {/* RIGHT: Bạn Viết Chat + Kho từ ngữ */}
+        {/* RIGHT: Kho từ ngữ + Trò chuyện với Bạn Viết (ALWAYS visible so Word Bank works even when AI is off/out) */}
         <aside className="lg:col-span-5 space-y-6">
           {/* Kho từ ngữ */}
           <section className="rounded-2xl bg-white border border-[#DDE7E2] p-5 sm:p-6 space-y-4">
@@ -466,12 +512,12 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
               <div>
                 <h2 className="text-xl font-bold text-[#1C2A24]">Kho từ ngữ</h2>
                 <p className="text-[16px] text-[#4B6358]">
-                  Chọn phần đang làm để nhận 6–8 từ hoặc cụm từ ngắn (không phải câu).
+                  Chọn chủ đề rồi hỏi Bạn Viết hoặc mở thẳng kho từ ngữ chuẩn lớp 5 (luôn dùng được).
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="space-y-2.5">
               <label htmlFor="word-topic-select" className="sr-only">
                 Chọn khía cạnh cần tìm từ ngữ
               </label>
@@ -479,7 +525,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                 id="word-topic-select"
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
-                className="flex-1 min-h-[48px] px-3.5 py-2.5 rounded-xl border border-[#CBD5E1] bg-white text-[#1C2A24] focus:outline-none focus:ring-2 focus:ring-[#15803D]"
+                className="w-full min-h-[48px] px-3.5 py-2.5 rounded-xl border border-[#CBD5E1] bg-white text-[#1C2A24] focus:outline-none focus:ring-2 focus:ring-[#15803D]"
               >
                 {WORD_TOPICS.map((t) => (
                   <option key={t} value={t}>
@@ -487,20 +533,52 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                disabled={loadingWords}
-                onClick={() => onFetchWordBank(selectedTopic)}
-                className="inline-flex items-center justify-center gap-2 min-h-[48px] px-4 py-2.5 rounded-xl bg-[#15803D] text-white font-semibold hover:bg-[#166534] disabled:opacity-60 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-              >
-                {loadingWords ? (
-                  <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                ) : (
-                  <BookOpen className="w-5 h-5" aria-hidden="true" />
-                )}
-                <span>Kho từ ngữ</span>
-              </button>
+
+              {/* Two side-by-side buttons: "Hỏi Bạn Viết" & "Xem kho từ" */}
+              <div className="flex flex-wrap gap-2.5">
+                <button
+                  type="button"
+                  disabled={!canAskAi || loadingWords}
+                  onClick={() => onFetchWordBank(selectedTopic)}
+                  className={`flex-1 min-w-[160px] inline-flex items-center justify-center gap-2 min-h-[46px] px-3.5 py-2 rounded-xl text-[15px] font-semibold transition-colors ${
+                    canAskAi
+                      ? 'bg-[#0369A1] text-white hover:bg-[#075985] disabled:opacity-60 cursor-pointer'
+                      : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] opacity-75 cursor-not-allowed'
+                  }`}
+                >
+                  {loadingWords ? (
+                    <Loader2 className="w-4 h-4 animate-spin shrink-0" aria-hidden="true" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  )}
+                  {canAskAi ? (
+                    <span>
+                      Hỏi Bạn Viết{' '}
+                      <span className="font-normal tabular-nums">
+                        (còn {aiRemainingToday} lượt)
+                      </span>
+                    </span>
+                  ) : (
+                    <span>{AI_LIMIT_REACHED_LABEL}</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onOpenKhoTu(selectedTopic)}
+                  className="inline-flex items-center justify-center gap-2 min-h-[46px] px-4 py-2 rounded-xl bg-[#15803D] text-white text-[15px] font-semibold hover:bg-[#166534] transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Xem kho từ</span>
+                </button>
+              </div>
             </div>
+
+            {project.suggestedWordNotice && (
+              <p className="text-[14px] text-[#64748B] italic bg-[#FFFBEB] border border-[#FDE68A] rounded-xl px-3.5 py-2">
+                {project.suggestedWordNotice}
+              </p>
+            )}
 
             {project.suggestedWords.length > 0 && (
               <div className="space-y-2.5 pt-1">
@@ -514,7 +592,9 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                       <button
                         key={word}
                         type="button"
-                        onClick={() => onToggleSavedWord(word)}
+                        onClick={() =>
+                          onToggleSavedWord(word, project.suggestedWordSource === 'kho')
+                        }
                         aria-pressed={saved}
                         className={`min-h-[44px] px-4 py-2 rounded-xl font-medium transition-colors cursor-pointer ${
                           saved
@@ -540,7 +620,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                     <button
                       key={`saved-${word}`}
                       type="button"
-                      onClick={() => onToggleSavedWord(word)}
+                      onClick={() => onToggleSavedWord(word, false)}
                       aria-label={`Bỏ từ "${word}" khỏi kho riêng`}
                       className="min-h-[42px] px-3.5 py-1.5 rounded-xl bg-[#FEF9C3] text-[#713F12] border border-[#FDE047] font-medium hover:bg-[#FEF08A] transition-colors cursor-pointer"
                     >
@@ -550,7 +630,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                 </div>
               ) : (
                 <p className="text-[16px] text-[#64748B]">
-                  Chưa lưu từ nào. Em bấm “Kho từ ngữ” rồi chạm vào các từ hay nhé!
+                  Chưa lưu từ nào. Em bấm “Xem kho từ” hoặc “Hỏi Bạn Viết” rồi chạm vào các từ hay nhé!
                 </p>
               )}
             </div>
@@ -566,7 +646,9 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                   <span>Trò chuyện với Bạn Viết</span>
                 </h2>
                 <p className="text-[16px] text-[#4B6358]">
-                  Bạn Viết chỉ hỏi gợi mở ngắn gọn, không viết thay em.
+                  {canAskAi
+                    ? `Bạn Viết chỉ hỏi gợi mở ngắn gọn, không viết thay em (còn ${aiRemainingToday} lượt hôm nay).`
+                    : AI_LIMIT_REACHED_LABEL}
                 </p>
               </div>
             </div>
@@ -574,7 +656,10 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
             <div className="max-h-72 overflow-y-auto space-y-3 pr-1">
               {project.chatMessages.length === 0 ? (
                 <p className="text-[16px] text-[#4B6358] bg-[#F6FAF7] rounded-xl p-4 border border-[#E2ECE6]">
-                  Em đang phân vân tả chi tiết nào về {personLabel.toLowerCase()}? Nhắn cho mình biết nhé!
+                  Em đang phân vân tả chi tiết nào về {personLabel.toLowerCase()}?{' '}
+                  {canAskAi
+                    ? 'Nhắn cho mình biết nhé!'
+                    : 'Em mở “Xem kho từ” để xem thêm câu hỏi gợi nhớ và từ ngữ nhé!'}
                 </p>
               ) : (
                 project.chatMessages.map((msg) => (
@@ -587,9 +672,16 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                     }`}
                   >
                     <p className="text-[15px] font-semibold mb-0.5 opacity-85">
-                      {msg.role === 'user' ? 'Em' : 'Bạn Viết'}
+                      {msg.role === 'user'
+                        ? 'Em'
+                        : msg.nguon === 'kho'
+                          ? 'Gợi ý từ kho từ ngữ'
+                          : 'Bạn Viết'}
                     </p>
                     <p className="leading-relaxed break-words">{msg.text}</p>
+                    {msg.thongBao && (
+                      <p className="mt-1 text-[13px] text-[#64748B] italic">{msg.thongBao}</p>
+                    )}
                   </div>
                 ))
               )}
@@ -601,7 +693,7 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
               )}
             </div>
 
-            <form onSubmit={handleChatSubmit} className="space-y-2">
+            <form onSubmit={handleChatSubmit} className="space-y-2.5">
               <label htmlFor="chat-ban-viet-input" className="sr-only">
                 Nhắn tin cho Bạn Viết (tối đa 300 ký tự)
               </label>
@@ -610,23 +702,38 @@ export const Step2Outline: React.FC<Step2OutlineProps> = ({
                   id="chat-ban-viet-input"
                   type="text"
                   maxLength={MAX_MESSAGE_CHARS}
+                  disabled={!canAskAi}
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  placeholder="Hỏi Bạn Viết về ý muốn tả…"
-                  className="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-white focus:outline-none focus:ring-2 focus:ring-[#15803D]"
+                  placeholder={
+                    canAskAi
+                      ? 'Hỏi Bạn Viết về ý muốn tả…'
+                      : AI_LIMIT_REACHED_LABEL
+                  }
+                  className="flex-1 min-h-[48px] px-4 py-2.5 rounded-xl border border-[#CBD5E1] bg-white disabled:bg-[#F8FAFC] disabled:text-[#64748B] focus:outline-none focus:ring-2 focus:ring-[#15803D]"
                 />
                 <button
                   type="submit"
-                  disabled={loadingChat || !chatInput.trim()}
-                  aria-label="Gửi tin nhắn cho Bạn Viết"
+                  disabled={!canAskAi || loadingChat || !chatInput.trim()}
+                  aria-label="Hỏi Bạn Viết"
                   className="min-h-[48px] min-w-[52px] px-4 rounded-xl bg-[#15803D] text-white font-semibold hover:bg-[#166534] disabled:bg-[#CBD5E1] disabled:cursor-not-allowed flex items-center justify-center transition-colors cursor-pointer shrink-0"
                 >
                   <Send className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
-              <p className="text-[15px] text-[#64748B] text-right tabular-nums">
-                {chatInput.length}/{MAX_MESSAGE_CHARS} ký tự
-              </p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <button
+                  type="button"
+                  onClick={() => onOpenKhoTu(selectedTopic)}
+                  className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-[#15803D] hover:underline cursor-pointer"
+                >
+                  <BookOpen className="w-4 h-4" aria-hidden="true" />
+                  <span>Xem kho từ (không tốn lượt)</span>
+                </button>
+                <p className="text-[15px] text-[#64748B] tabular-nums">
+                  {chatInput.length}/{MAX_MESSAGE_CHARS} ký tự
+                </p>
+              </div>
             </form>
           </section>
         </aside>

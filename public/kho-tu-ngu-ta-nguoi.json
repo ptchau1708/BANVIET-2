@@ -1,0 +1,1900 @@
+{
+ "version": "1.0",
+ "title": "Kho từ ngữ tả người – Tiếng Việt lớp 5",
+ "mo_ta": "Kho từ ngữ dùng sẵn trong app Bạn Viết, không cần gọi AI. Gồm từ ngữ (words), cụm từ (phrases), hình ảnh so sánh (so_sanh), câu hỏi gợi ý quan sát (cau_hoi), ghi chú (ghi_chu).",
+ "nguyen_tac": "Từ ngữ để em chọn và tự đặt câu. Không chép nguyên cụm, hãy sửa cho đúng với người em tả.",
+ "tong_so_muc": 1355,
+ "groups": [
+  {
+   "id": "ngoai-hinh",
+   "name": "Tả ngoại hình",
+   "topics": [
+    {
+     "id": "voc-dang",
+     "name": "Vóc dáng, dáng người",
+     "words": [
+      "cao",
+      "thấp",
+      "dong dỏng",
+      "cao ráo",
+      "thon thả",
+      "mảnh mai",
+      "mảnh khảnh",
+      "nhỏ nhắn",
+      "nhỏ bé",
+      "bé loắt choắt",
+      "gầy",
+      "gầy gò",
+      "hơi gầy",
+      "khẳng khiu",
+      "đầy đặn",
+      "đậm người",
+      "chắc nịch",
+      "rắn rỏi",
+      "vạm vỡ",
+      "lực lưỡng",
+      "cường tráng",
+      "khỏe mạnh",
+      "to cao",
+      "cân đối",
+      "săn chắc",
+      "mũm mĩm",
+      "bụ bẫm",
+      "tròn trịa",
+      "phúng phính",
+      "nhanh nhẹn",
+      "nhanh nhảu",
+      "lanh lẹ",
+      "hoạt bát",
+      "khom khom",
+      "còng",
+      "lom khom",
+      "gầy guộc",
+      "nhỏ thó",
+      "thanh mảnh",
+      "gọn gàng",
+      "tầm thước"
+     ],
+     "phrases": [
+      "dáng người dong dỏng cao",
+      "dáng người nhỏ nhắn, gọn gàng",
+      "thân hình cân đối",
+      "thân hình rắn chắc",
+      "đôi vai rộng",
+      "đôi vai gầy",
+      "tấm lưng hơi còng",
+      "lưng đã còng xuống",
+      "dáng đi nhanh nhẹn",
+      "dáng người thấp đậm",
+      "người chắc nịch như cây cột",
+      "dáng người thon thả",
+      "không cao lắm",
+      "cao hơn bố một chút",
+      "thân hình bụ bẫm",
+      "chân tay mũm mĩm"
+     ],
+     "so_sanh": [
+      "cao như cây sào",
+      "nhỏ nhắn như cô búp bê",
+      "chắc nịch như cây cột đình",
+      "khỏe như một lực sĩ",
+      "dáng gầy như cây sậy",
+      "tròn như quả bóng nhỏ",
+      "nhanh nhẹn như con sóc"
+     ],
+     "cau_hoi": [
+      "Người đó cao hay thấp so với em?",
+      "Dáng người gầy, đầy đặn hay rắn chắc?",
+      "Khi đứng, khi đi, dáng người đó trông thế nào?",
+      "Có điều gì ở dáng người khiến em nhớ nhất?"
+     ]
+    },
+    {
+     "id": "khuon-mat",
+     "name": "Khuôn mặt",
+     "words": [
+      "tròn",
+      "trái xoan",
+      "vuông",
+      "vuông chữ điền",
+      "thon",
+      "dài",
+      "bầu bĩnh",
+      "bầu bầu",
+      "phúc hậu",
+      "hiền hậu",
+      "hồng hào",
+      "rạng rỡ",
+      "tươi tắn",
+      "tươi tỉnh",
+      "sáng sủa",
+      "thanh tú",
+      "khôi ngô",
+      "xinh xắn",
+      "đáng yêu",
+      "nghiêm nghị",
+      "nghiêm trang",
+      "đăm chiêu",
+      "hiền từ",
+      "nhăn nheo",
+      "sạm nắng",
+      "rám nắng",
+      "mệt mỏi",
+      "vui vẻ",
+      "bừng sáng",
+      "ửng hồng",
+      "đỏ hây hây",
+      "lấm tấm mồ hôi"
+     ],
+     "phrases": [
+      "khuôn mặt trái xoan",
+      "khuôn mặt chữ điền",
+      "khuôn mặt tròn phúc hậu",
+      "gương mặt hiền hậu",
+      "gương mặt sáng sủa",
+      "vầng trán cao",
+      "vầng trán rộng",
+      "trán dô",
+      "đôi gò má cao",
+      "gò má ửng hồng",
+      "đôi má lúm đồng tiền",
+      "đôi má phúng phính",
+      "má hồng như quả đào",
+      "nước da hồng hào trên khuôn mặt",
+      "khuôn mặt luôn tươi cười",
+      "nét mặt nghiêm nghị",
+      "nét mặt đăm chiêu",
+      "vết chân chim nơi khóe mắt",
+      "những nếp nhăn trên trán"
+     ],
+     "so_sanh": [
+      "khuôn mặt tròn như mặt trăng rằm",
+      "má hồng như quả táo chín",
+      "má phúng phính như hai cái bánh bao",
+      "gương mặt tươi như hoa",
+      "nếp nhăn như những đường cày trên ruộng"
+     ],
+     "cau_hoi": [
+      "Khuôn mặt người đó tròn, dài hay chữ điền?",
+      "Khi vui, khuôn mặt thay đổi ra sao?",
+      "Trên khuôn mặt có nét gì đặc biệt (má lúm, nốt ruồi, nếp nhăn)?"
+     ]
+    },
+    {
+     "id": "mai-toc",
+     "name": "Mái tóc",
+     "words": [
+      "đen",
+      "đen nhánh",
+      "đen láy",
+      "đen mượt",
+      "óng ả",
+      "óng mượt",
+      "mượt mà",
+      "suôn mượt",
+      "dày",
+      "dày dặn",
+      "thưa",
+      "lưa thưa",
+      "mỏng",
+      "xoăn",
+      "quăn",
+      "gợn sóng",
+      "thẳng",
+      "ngắn",
+      "dài",
+      "bạc",
+      "bạc trắng",
+      "bạc phơ",
+      "hoa râm",
+      "muối tiêu",
+      "lốm đốm bạc",
+      "cứng",
+      "mềm",
+      "rối",
+      "bù xù",
+      "gọn gàng",
+      "vàng hoe",
+      "nâu",
+      "thơm",
+      "óng ánh"
+     ],
+     "phrases": [
+      "mái tóc đen nhánh",
+      "mái tóc dài ngang lưng",
+      "mái tóc buông xõa",
+      "mái tóc búi gọn sau gáy",
+      "mái tóc tết hai bím",
+      "mái tóc cột đuôi ngựa",
+      "mái tóc cắt ngắn gọn gàng",
+      "mái tóc húi cua",
+      "mái tóc đã điểm bạc",
+      "mái tóc bạc trắng như cước",
+      "vài sợi tóc bạc",
+      "mái tóc thoang thoảng mùi bồ kết",
+      "mái tóc thơm mùi dầu gội",
+      "tóc mái lòa xòa trước trán",
+      "búi tóc nhỏ sau gáy"
+     ],
+     "so_sanh": [
+      "tóc đen như gỗ mun",
+      "tóc mượt như tơ",
+      "tóc óng như dòng suối",
+      "tóc bạc trắng như cước",
+      "tóc trắng như mây",
+      "tóc xoăn như sợi mì",
+      "tóc mềm như nhung"
+     ],
+     "cau_hoi": [
+      "Tóc người đó màu gì, dài hay ngắn?",
+      "Người đó thường để tóc kiểu gì?",
+      "Tóc có mùi gì quen thuộc không?",
+      "Mái tóc có đổi khác theo năm tháng không?"
+     ]
+    },
+    {
+     "id": "doi-mat",
+     "name": "Đôi mắt",
+     "words": [
+      "to",
+      "tròn",
+      "to tròn",
+      "đen láy",
+      "đen nhánh",
+      "long lanh",
+      "lấp lánh",
+      "sáng",
+      "sáng ngời",
+      "tinh anh",
+      "tinh nghịch",
+      "hiền",
+      "hiền từ",
+      "dịu dàng",
+      "trìu mến",
+      "ấm áp",
+      "nghiêm",
+      "nghiêm khắc",
+      "một mí",
+      "hai mí",
+      "bồ câu",
+      "híp",
+      "ti hí",
+      "sâu",
+      "mờ đục",
+      "kèm nhèm",
+      "đỏ hoe",
+      "rưng rưng",
+      "ngân ngấn",
+      "lim dim",
+      "tròn xoe",
+      "mở to",
+      "nheo nheo"
+     ],
+     "phrases": [
+      "đôi mắt to tròn",
+      "đôi mắt bồ câu",
+      "đôi mắt đen láy",
+      "đôi mắt long lanh",
+      "ánh mắt hiền từ",
+      "ánh mắt trìu mến",
+      "ánh mắt nghiêm khắc mà ấm áp",
+      "đôi mắt biết cười",
+      "mắt cười híp lại",
+      "đôi mắt đã mờ",
+      "đeo cặp kính lão",
+      "đeo cặp kính cận",
+      "hàng mi dài cong vút",
+      "đôi mắt nheo lại khi cười",
+      "ánh mắt lấp lánh niềm vui",
+      "ánh mắt khích lệ"
+     ],
+     "so_sanh": [
+      "đôi mắt sáng như sao",
+      "mắt long lanh như hai hòn bi ve",
+      "mắt đen như hạt nhãn",
+      "mắt tròn như hai hạt nhãn",
+      "ánh mắt ấm áp như nắng mùa xuân",
+      "mắt lấp lánh như mặt hồ"
+     ],
+     "cau_hoi": [
+      "Đôi mắt người đó to hay nhỏ, màu gì?",
+      "Khi vui hay buồn, ánh mắt thay đổi thế nào?",
+      "Ánh mắt người đó nhìn em ra sao?",
+      "Người đó có đeo kính không?"
+     ]
+    },
+    {
+     "id": "long-may",
+     "name": "Lông mày, hàng mi",
+     "words": [
+      "rậm",
+      "thưa",
+      "đen",
+      "mảnh",
+      "cong",
+      "lá liễu",
+      "ngài",
+      "sâu róm",
+      "dài",
+      "cong vút",
+      "bạc"
+     ],
+     "phrases": [
+      "đôi lông mày rậm",
+      "đôi lông mày lá liễu",
+      "đôi lông mày cong",
+      "lông mày đã bạc",
+      "hàng mi dài cong vút",
+      "đôi lông mày nhíu lại khi suy nghĩ"
+     ],
+     "so_sanh": [
+      "lông mày cong như vầng trăng non",
+      "lông mày rậm như hai con sâu róm"
+     ],
+     "cau_hoi": [
+      "Lông mày người đó rậm hay mảnh?",
+      "Khi suy nghĩ hay khi cười, lông mày thế nào?"
+     ]
+    },
+    {
+     "id": "mui",
+     "name": "Cái mũi",
+     "words": [
+      "cao",
+      "thẳng",
+      "dọc dừa",
+      "tẹt",
+      "hếch",
+      "nhỏ",
+      "nhỏ nhắn",
+      "to",
+      "thanh",
+      "xinh xắn"
+     ],
+     "phrases": [
+      "sống mũi cao",
+      "chiếc mũi dọc dừa",
+      "cái mũi nhỏ xinh",
+      "cái mũi hơi hếch",
+      "mũi đỏ ửng vì lạnh",
+      "chiếc mũi lấm tấm mồ hôi"
+     ],
+     "so_sanh": [
+      "mũi thẳng như dọc dừa",
+      "mũi nhỏ như hạt đậu"
+     ],
+     "cau_hoi": [
+      "Mũi người đó cao hay tẹt, to hay nhỏ?"
+     ]
+    },
+    {
+     "id": "mieng-moi",
+     "name": "Miệng, đôi môi",
+     "words": [
+      "nhỏ",
+      "nhỏ nhắn",
+      "xinh xinh",
+      "rộng",
+      "tươi",
+      "đỏ",
+      "đỏ thắm",
+      "hồng",
+      "hồng hào",
+      "mỏng",
+      "dày",
+      "chúm chím",
+      "móm",
+      "móm mém",
+      "nhai trầu",
+      "tươi tắn"
+     ],
+     "phrases": [
+      "đôi môi đỏ thắm",
+      "đôi môi hồng",
+      "cái miệng nhỏ xinh",
+      "miệng chúm chím",
+      "miệng cười tươi",
+      "miệng móm mém",
+      "đôi môi đỏ quết trầu",
+      "miệng lúc nào cũng tươi cười",
+      "miệng mím chặt khi tập trung"
+     ],
+     "so_sanh": [
+      "môi đỏ như son",
+      "môi đỏ như cánh hoa hồng",
+      "miệng chúm chím như nụ hoa"
+     ],
+     "cau_hoi": [
+      "Miệng và môi người đó trông thế nào?",
+      "Khi nói hoặc khi cười, miệng người đó ra sao?"
+     ]
+    },
+    {
+     "id": "rang-nu-cuoi",
+     "name": "Hàm răng, nụ cười",
+     "words": [
+      "trắng",
+      "trắng bóng",
+      "đều",
+      "đều tăm tắp",
+      "khểnh",
+      "sún",
+      "móm",
+      "đen",
+      "rụng",
+      "tươi",
+      "hiền",
+      "hiền hậu",
+      "rạng rỡ",
+      "tươi rói",
+      "móm mém",
+      "giòn tan",
+      "khúc khích",
+      "hồn nhiên",
+      "dịu dàng",
+      "ấm áp",
+      "hiền lành",
+      "tủm tỉm",
+      "mỉm"
+     ],
+     "phrases": [
+      "hàm răng trắng đều",
+      "chiếc răng khểnh duyên dáng",
+      "hàm răng sún",
+      "hàm răng đã rụng gần hết",
+      "hàm răng nhuộm đen",
+      "nụ cười hiền hậu",
+      "nụ cười móm mém",
+      "nụ cười rạng rỡ",
+      "nụ cười tươi rói",
+      "nụ cười ấm áp",
+      "tiếng cười giòn tan",
+      "cười khúc khích",
+      "mỉm cười",
+      "cười tủm tỉm",
+      "cười híp cả mắt",
+      "nụ cười để lộ má lúm đồng tiền"
+     ],
+     "so_sanh": [
+      "răng trắng như hạt bắp",
+      "răng đều như hạt bắp",
+      "nụ cười tươi như hoa",
+      "nụ cười ấm áp như nắng sớm",
+      "tiếng cười giòn như tiếng chuông"
+     ],
+     "cau_hoi": [
+      "Nụ cười của người đó như thế nào?",
+      "Khi nào người đó cười nhiều nhất?",
+      "Hàm răng có gì đặc biệt (răng khểnh, răng sún)?"
+     ]
+    },
+    {
+     "id": "lan-da",
+     "name": "Làn da",
+     "words": [
+      "trắng",
+      "trắng hồng",
+      "hồng hào",
+      "ngăm",
+      "ngăm đen",
+      "bánh mật",
+      "rám nắng",
+      "sạm",
+      "đen sạm",
+      "mịn",
+      "mịn màng",
+      "mềm mại",
+      "nhăn nheo",
+      "nhăn nhúm",
+      "chai sạn",
+      "khô ráp",
+      "nhẵn nhụi",
+      "lốm đốm",
+      "đồi mồi"
+     ],
+     "phrases": [
+      "nước da trắng hồng",
+      "nước da bánh mật",
+      "làn da rám nắng",
+      "làn da sạm đen vì nắng gió",
+      "làn da mịn màng",
+      "làn da đã nhăn nheo",
+      "những vết đồi mồi trên mu bàn tay",
+      "làn da mát rượi"
+     ],
+     "so_sanh": [
+      "da trắng như trứng gà bóc",
+      "da hồng như trái đào",
+      "da nhăn như vỏ quả táo khô",
+      "da rám như màu bánh mật"
+     ],
+     "cau_hoi": [
+      "Nước da người đó trắng hay ngăm, mịn hay nhăn?",
+      "Vì sao làn da người đó như vậy (nắng gió, tuổi tác)?"
+     ]
+    },
+    {
+     "id": "ban-tay",
+     "name": "Đôi bàn tay",
+     "words": [
+      "thon",
+      "thon thả",
+      "búp măng",
+      "mềm",
+      "mềm mại",
+      "ấm",
+      "ấm áp",
+      "to",
+      "dày",
+      "thô",
+      "thô ráp",
+      "chai sạn",
+      "gân guốc",
+      "nổi gân",
+      "xương xương",
+      "nhăn nheo",
+      "khéo léo",
+      "nhanh nhẹn",
+      "mũm mĩm",
+      "nhỏ xíu",
+      "trắng trẻo"
+     ],
+     "phrases": [
+      "đôi bàn tay thon thả",
+      "ngón tay búp măng",
+      "đôi bàn tay chai sạn",
+      "đôi bàn tay gân guốc",
+      "đôi bàn tay ấm áp",
+      "bàn tay khéo léo",
+      "bàn tay xoa đầu em",
+      "những ngón tay thoăn thoắt",
+      "bàn tay nhỏ xíu, mũm mĩm",
+      "bàn tay dính đầy phấn trắng",
+      "bàn tay lấm lem đất cát"
+     ],
+     "so_sanh": [
+      "ngón tay thon như búp măng",
+      "bàn tay chai sạn như vỏ cây",
+      "bàn tay ấm như chiếc lò sưởi nhỏ",
+      "bàn tay mềm như bông"
+     ],
+     "cau_hoi": [
+      "Đôi bàn tay người đó trông thế nào?",
+      "Đôi bàn tay ấy thường làm những việc gì?",
+      "Khi bàn tay ấy chạm vào em, em thấy thế nào?"
+     ]
+    },
+    {
+     "id": "doi-chan-dang-di",
+     "name": "Đôi chân, dáng đi",
+     "words": [
+      "nhanh nhẹn",
+      "thoăn thoắt",
+      "nhẹ nhàng",
+      "khoan thai",
+      "chậm rãi",
+      "từ tốn",
+      "chập chững",
+      "lẫm chẫm",
+      "tập tễnh",
+      "lom khom",
+      "vững chãi",
+      "hối hả",
+      "vội vã",
+      "rảo bước",
+      "lon ton",
+      "tung tăng",
+      "nhún nhảy",
+      "khập khiễng"
+     ],
+     "phrases": [
+      "bước chân nhanh nhẹn",
+      "dáng đi khoan thai",
+      "bước đi chậm rãi",
+      "dáng đi chập chững",
+      "bước đi lẫm chẫm",
+      "chống gậy đi từng bước",
+      "đôi chân rắn chắc",
+      "đôi chân lấm bùn",
+      "đôi chân đi khắp cánh đồng",
+      "chạy lon ton theo mẹ"
+     ],
+     "so_sanh": [
+      "đi nhanh như gió",
+      "bước nhẹ như mèo",
+      "chạy lon ton như chú cún con",
+      "dáng đi vững như cây cổ thụ"
+     ],
+     "cau_hoi": [
+      "Người đó đi nhanh hay chậm?",
+      "Dáng đi có gì đặc biệt mà em nhận ra từ xa?"
+     ]
+    },
+    {
+     "id": "giong-noi",
+     "name": "Giọng nói",
+     "words": [
+      "trầm",
+      "trầm ấm",
+      "ấm áp",
+      "ồm ồm",
+      "khàn khàn",
+      "trong trẻo",
+      "trong veo",
+      "ngọt ngào",
+      "dịu dàng",
+      "nhẹ nhàng",
+      "thánh thót",
+      "lanh lảnh",
+      "sang sảng",
+      "vang vang",
+      "rổn rảng",
+      "to",
+      "nhỏ nhẹ",
+      "từ tốn",
+      "chậm rãi",
+      "nhanh nhảu",
+      "líu lo",
+      "bập bẹ",
+      "ngọng nghịu",
+      "nghiêm",
+      "truyền cảm",
+      "run run",
+      "móm mém"
+     ],
+     "phrases": [
+      "giọng nói trầm ấm",
+      "giọng nói nhẹ nhàng, dịu dàng",
+      "giọng nói sang sảng",
+      "giọng nói trong trẻo",
+      "giọng giảng bài truyền cảm",
+      "giọng hát ngọt ngào",
+      "giọng ru à ơi",
+      "tiếng nói bập bẹ",
+      "giọng nói đã run run",
+      "giọng quê mộc mạc",
+      "nói năng nhỏ nhẹ, từ tốn",
+      "tiếng gọi quen thuộc"
+     ],
+     "so_sanh": [
+      "giọng nói ấm như tiếng đàn",
+      "giọng trong như tiếng chim hót",
+      "giọng ngọt như mật ong",
+      "giọng vang như tiếng chuông",
+      "giọng dịu dàng như lời ru"
+     ],
+     "cau_hoi": [
+      "Giọng nói người đó trầm hay trong, to hay nhỏ?",
+      "Người đó hay nói câu gì với em?",
+      "Em nhớ nhất người đó nói gì, vào lúc nào?"
+     ]
+    },
+    {
+     "id": "trang-phuc",
+     "name": "Trang phục, đồ dùng quen thuộc",
+     "words": [
+      "giản dị",
+      "gọn gàng",
+      "chỉnh tề",
+      "lịch sự",
+      "tươm tất",
+      "sạch sẽ",
+      "tinh tươm",
+      "thướt tha",
+      "duyên dáng",
+      "mộc mạc",
+      "cũ",
+      "bạc màu",
+      "sờn vai",
+      "tươi sáng"
+     ],
+     "phrases": [
+      "bộ quần áo giản dị",
+      "chiếc áo bà ba",
+      "chiếc áo dài thướt tha",
+      "bộ áo dài truyền thống",
+      "chiếc nón lá",
+      "chiếc khăn rằn",
+      "chiếc khăn mỏ quạ",
+      "chiếc áo sơ mi trắng",
+      "bộ đồng phục",
+      "bộ quân phục",
+      "chiếc áo blu trắng",
+      "chiếc áo đã bạc màu",
+      "chiếc tạp dề",
+      "đôi dép nhựa",
+      "đôi giày vải",
+      "cặp kính lão",
+      "chiếc gậy trúc",
+      "chiếc túi xách quen thuộc",
+      "chiếc mũ bảo hiểm",
+      "cây quạt nan",
+      "chiếc cặp sách"
+     ],
+     "so_sanh": [
+      "áo dài thướt tha như cánh bướm",
+      "áo trắng như mây"
+     ],
+     "cau_hoi": [
+      "Người đó thường mặc gì khi ở nhà, khi đi làm?",
+      "Có món đồ nào gắn liền với người đó (nón, kính, gậy, khăn)?"
+     ]
+    },
+    {
+     "id": "tuoi-tac",
+     "name": "Dấu hiệu tuổi tác",
+     "words": [
+      "già",
+      "già yếu",
+      "còn khỏe",
+      "minh mẫn",
+      "tráng kiện",
+      "trẻ trung",
+      "non nớt",
+      "ngây thơ",
+      "nhỏ xíu",
+      "lớn bổng",
+      "trạc tuổi",
+      "ngoài sáu mươi",
+      "ngoài bảy mươi",
+      "tuổi đã cao"
+     ],
+     "phrases": [
+      "tóc đã điểm bạc",
+      "da đã nhăn",
+      "lưng đã còng",
+      "mắt đã mờ",
+      "răng đã rụng",
+      "tuổi đã cao nhưng vẫn khỏe",
+      "trông trẻ hơn tuổi",
+      "năm nay vừa tròn ... tuổi",
+      "mới chập chững biết đi",
+      "đang tuổi tập nói"
+     ],
+     "so_sanh": [
+      "già mà vẫn khỏe như cây tùng cây bách",
+      "nhỏ xíu như búp bê"
+     ],
+     "cau_hoi": [
+      "Người đó bao nhiêu tuổi?",
+      "Những dấu hiệu nào cho em biết tuổi của người đó?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tinh-tinh",
+   "name": "Tả tính tình",
+   "topics": [
+    {
+     "id": "hien-hau",
+     "name": "Hiền hậu, dịu dàng",
+     "words": [
+      "hiền",
+      "hiền hậu",
+      "hiền lành",
+      "hiền từ",
+      "hiền dịu",
+      "dịu dàng",
+      "dịu hiền",
+      "nhẹ nhàng",
+      "điềm đạm",
+      "điềm tĩnh",
+      "từ tốn",
+      "ôn tồn",
+      "nhân hậu",
+      "phúc hậu",
+      "bao dung",
+      "độ lượng",
+      "vị tha",
+      "nhẫn nại",
+      "kiên nhẫn"
+     ],
+     "phrases": [
+      "chưa bao giờ to tiếng với ai",
+      "lúc nào cũng nhẹ nhàng khuyên bảo",
+      "luôn bao dung khi em mắc lỗi",
+      "ôn tồn giảng giải",
+      "điềm tĩnh trước mọi chuyện"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "yeu-thuong",
+     "name": "Yêu thương, quan tâm",
+     "words": [
+      "yêu thương",
+      "thương yêu",
+      "chu đáo",
+      "ân cần",
+      "tận tình",
+      "tận tụy",
+      "chăm chút",
+      "quan tâm",
+      "chiều chuộng",
+      "âu yếm",
+      "trìu mến",
+      "hy sinh",
+      "tần tảo",
+      "thủy chung",
+      "tình cảm",
+      "ấm áp",
+      "chu toàn"
+     ],
+     "phrases": [
+      "luôn dành phần ngon nhất cho các con",
+      "thức khuya chăm em khi em ốm",
+      "hỏi han từng chút một",
+      "nhường nhịn mọi người",
+      "lo lắng cho cả nhà",
+      "quan tâm đến từng bữa ăn giấc ngủ",
+      "luôn nghĩ cho người khác trước"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "cham-chi",
+     "name": "Chăm chỉ, chịu khó",
+     "words": [
+      "chăm chỉ",
+      "cần cù",
+      "siêng năng",
+      "chịu khó",
+      "chịu thương chịu khó",
+      "tần tảo",
+      "cần mẫn",
+      "miệt mài",
+      "say mê",
+      "tận tụy",
+      "tháo vát",
+      "đảm đang",
+      "khéo tay",
+      "khéo léo",
+      "nhanh nhẹn",
+      "gọn gàng",
+      "ngăn nắp",
+      "cẩn thận",
+      "tỉ mỉ",
+      "chu đáo"
+     ],
+     "phrases": [
+      "dậy từ sớm tinh mơ",
+      "làm việc quần quật suốt ngày",
+      "không lúc nào ngơi tay",
+      "tay làm hàm nhai",
+      "làm việc gì cũng chu đáo",
+      "vừa đi làm vừa lo việc nhà",
+      "tỉ mỉ từng đường kim mũi chỉ"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "vui-ve",
+     "name": "Vui vẻ, hòa đồng",
+     "words": [
+      "vui vẻ",
+      "vui tính",
+      "hài hước",
+      "dí dỏm",
+      "hóm hỉnh",
+      "lạc quan",
+      "yêu đời",
+      "cởi mở",
+      "hòa đồng",
+      "thân thiện",
+      "dễ gần",
+      "mến khách",
+      "hiếu khách",
+      "hồn nhiên",
+      "nhí nhảnh",
+      "tinh nghịch",
+      "nghịch ngợm",
+      "hiếu động",
+      "lém lỉnh",
+      "láu lỉnh",
+      "liến thoắng",
+      "nhanh nhảu"
+     ],
+     "phrases": [
+      "đi đến đâu là có tiếng cười đến đó",
+      "hay kể chuyện vui cho cả nhà nghe",
+      "ai gặp cũng quý",
+      "luôn tươi cười chào hỏi mọi người",
+      "hay pha trò làm mọi người bật cười"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "nghiem-khac",
+     "name": "Nghiêm khắc, mạnh mẽ",
+     "words": [
+      "nghiêm khắc",
+      "nghiêm nghị",
+      "nghiêm túc",
+      "nghiêm trang",
+      "kỷ luật",
+      "nguyên tắc",
+      "cứng rắn",
+      "mạnh mẽ",
+      "quả quyết",
+      "dứt khoát",
+      "quyết đoán",
+      "kiên quyết",
+      "kiên cường",
+      "bản lĩnh",
+      "dũng cảm",
+      "gan dạ",
+      "can đảm",
+      "ít nói",
+      "trầm tính",
+      "sâu sắc"
+     ],
+     "phrases": [
+      "nghiêm khắc nhưng rất thương con",
+      "ít nói nhưng làm nhiều",
+      "nói là làm",
+      "nghiêm khắc khi em mắc lỗi rồi nhẹ nhàng giảng giải",
+      "không ngại khó khăn, vất vả"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "trung-thuc",
+     "name": "Trung thực, trách nhiệm",
+     "words": [
+      "trung thực",
+      "thật thà",
+      "ngay thẳng",
+      "chân thật",
+      "giản dị",
+      "mộc mạc",
+      "khiêm tốn",
+      "giữ lời",
+      "đúng hẹn",
+      "có trách nhiệm",
+      "tận tâm",
+      "công bằng",
+      "liêm khiết",
+      "tự trọng"
+     ],
+     "phrases": [
+      "chưa bao giờ nói dối",
+      "đã hứa là làm",
+      "nhận lỗi khi sai",
+      "luôn làm tròn công việc được giao",
+      "đối xử công bằng với mọi người"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "ham-hoc",
+     "name": "Ham học, thông minh",
+     "words": [
+      "thông minh",
+      "sáng dạ",
+      "nhanh trí",
+      "lanh lợi",
+      "ham học",
+      "ham hiểu biết",
+      "chăm học",
+      "hiếu học",
+      "tò mò",
+      "sáng tạo",
+      "uyên bác",
+      "hiểu biết rộng",
+      "giỏi giang",
+      "tài giỏi",
+      "khéo nói",
+      "hoạt ngôn"
+     ],
+     "phrases": [
+      "biết rất nhiều chuyện hay",
+      "trả lời được mọi câu hỏi của em",
+      "ham đọc sách",
+      "học đâu nhớ đó",
+      "hay tìm tòi, hỏi han"
+     ],
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    },
+    {
+     "id": "tinh-xau-nhe",
+     "name": "Nét chưa hoàn hảo (nói nhẹ nhàng, có tình thương)",
+     "words": [
+      "hơi nóng tính",
+      "hơi khó tính",
+      "hay lo",
+      "hay quên",
+      "hay cằn nhằn",
+      "hơi bướng",
+      "hay mè nheo",
+      "hay dỗi",
+      "nhút nhát",
+      "rụt rè",
+      "hay ngại",
+      "đãng trí"
+     ],
+     "phrases": [
+      "tuy hơi nóng tính nhưng rất thương em",
+      "đôi khi hay cằn nhằn vì lo cho em",
+      "hay quên chỗ để kính",
+      "có lúc dỗi nhưng chóng hết",
+      "nhút nhát trước người lạ"
+     ],
+     "ghi_chu": "Khi kể một nét chưa hoàn hảo, em nên kể kèm điều đáng yêu của người đó để bài văn có tình cảm.",
+     "cau_hoi": [
+      "Một việc làm nào cho thấy rõ tính tình này?",
+      "Em đã chứng kiến việc đó khi nào, ở đâu?",
+      "Lúc ấy người đó nói gì, làm gì?"
+     ]
+    }
+   ],
+   "ghi_chu": "Đừng chỉ kể tên tính tình. Hãy kể một việc làm cụ thể để người đọc tự thấy tính tình ấy."
+  },
+  {
+   "id": "hoat-dong",
+   "name": "Tả hoạt động, việc làm",
+   "topics": [
+    {
+     "id": "viec-nha",
+     "name": "Việc nhà, nấu nướng",
+     "words": [
+      "nấu cơm",
+      "nấu canh",
+      "kho cá",
+      "xào rau",
+      "nhặt rau",
+      "vo gạo",
+      "thổi lửa",
+      "quét nhà",
+      "lau nhà",
+      "giặt giũ",
+      "phơi quần áo",
+      "gấp quần áo",
+      "rửa bát",
+      "dọn dẹp",
+      "sắp xếp",
+      "đi chợ",
+      "khâu vá",
+      "may vá",
+      "tưới cây",
+      "cho gà ăn",
+      "nêm nếm",
+      "thoăn thoắt",
+      "tất bật",
+      "lúi húi",
+      "tần tảo"
+     ],
+     "phrases": [
+      "lúi húi trong bếp",
+      "tay thoăn thoắt nhặt rau",
+      "nêm nếm từng nồi canh",
+      "mâm cơm nóng hổi",
+      "tất bật từ sáng đến tối",
+      "căn nhà lúc nào cũng gọn gàng sạch sẽ",
+      "mùi canh chua thơm lừng"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "lam-vuon-dong-ruong",
+     "name": "Làm vườn, đồng ruộng, chăn nuôi",
+     "words": [
+      "cày",
+      "bừa",
+      "cấy",
+      "gặt",
+      "tát nước",
+      "nhổ cỏ",
+      "bón phân",
+      "vun gốc",
+      "tỉa cành",
+      "tưới rau",
+      "hái quả",
+      "trồng cây",
+      "chăm sóc",
+      "chăn trâu",
+      "cho lợn ăn",
+      "bắt sâu",
+      "đội nắng",
+      "dầm mưa",
+      "cần mẫn",
+      "lom khom"
+     ],
+     "phrases": [
+      "lom khom cấy lúa",
+      "vác cuốc ra đồng từ sáng sớm",
+      "mồ hôi ướt đẫm lưng áo",
+      "chăm chút từng luống rau",
+      "khu vườn xanh tốt nhờ bàn tay ông",
+      "về nhà khi mặt trời đã lặn"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "day-hoc",
+     "name": "Thầy cô dạy học",
+     "words": [
+      "giảng bài",
+      "viết bảng",
+      "chấm bài",
+      "sửa bài",
+      "kiểm tra bài",
+      "hướng dẫn",
+      "uốn nắn",
+      "khen ngợi",
+      "động viên",
+      "nhắc nhở",
+      "ân cần",
+      "tận tụy",
+      "say sưa",
+      "nắn nót",
+      "dịu dàng",
+      "kiên nhẫn"
+     ],
+     "phrases": [
+      "nét chữ nắn nót trên bảng",
+      "giọng giảng bài truyền cảm",
+      "cúi xuống cầm tay em uốn từng nét chữ",
+      "đi từng bàn xem bài",
+      "thức khuya chấm bài",
+      "ánh mắt khích lệ khi em giơ tay phát biểu",
+      "bụi phấn bám trên tóc"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "nghe-nghiep",
+     "name": "Công việc, nghề nghiệp",
+     "words": [
+      "bác sĩ",
+      "y tá",
+      "công nhân",
+      "nông dân",
+      "kỹ sư",
+      "chú bộ đội",
+      "chú công an",
+      "thợ may",
+      "thợ xây",
+      "thợ mộc",
+      "lái xe",
+      "buôn bán",
+      "bán hàng",
+      "giáo viên",
+      "nhân viên văn phòng",
+      "đầu bếp",
+      "lao công",
+      "ngư dân",
+      "thợ cắt tóc",
+      "tận tụy",
+      "yêu nghề",
+      "khéo tay",
+      "thành thạo",
+      "nhanh nhẹn"
+     ],
+     "phrases": [
+      "khám bệnh tận tình",
+      "đứng máy suốt ca",
+      "xây những ngôi nhà cao",
+      "đo cắt từng tấm vải",
+      "chở hàng đi khắp nơi",
+      "ra khơi đánh cá",
+      "tiếng máy khâu đều đều",
+      "đôi tay thoăn thoắt bên quầy hàng",
+      "về nhà khi trời đã tối"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "cham-soc-em",
+     "name": "Chăm sóc, chơi với em",
+     "words": [
+      "ru",
+      "bế",
+      "ẵm",
+      "dỗ dành",
+      "xoa đầu",
+      "vuốt tóc",
+      "ôm",
+      "hôn",
+      "kể chuyện",
+      "đọc truyện",
+      "dạy học",
+      "chở đi học",
+      "đưa đón",
+      "dắt tay",
+      "cõng",
+      "quạt",
+      "đắp chăn",
+      "bón cơm",
+      "chải tóc",
+      "tết tóc",
+      "chơi đùa",
+      "nô đùa"
+     ],
+     "phrases": [
+      "ngồi quạt cho em ngủ",
+      "kể chuyện cổ tích mỗi tối",
+      "chở em đến trường mỗi sáng",
+      "dắt tay em qua đường",
+      "ôm em vào lòng",
+      "dỗ dành khi em khóc",
+      "thức trắng đêm khi em ốm",
+      "tết tóc cho em trước giờ đi học"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "so-thich",
+     "name": "Sở thích, thói quen",
+     "words": [
+      "đọc báo",
+      "đọc sách",
+      "nghe đài",
+      "xem thời sự",
+      "uống trà",
+      "pha trà",
+      "chơi cờ",
+      "trồng hoa",
+      "nuôi chim",
+      "câu cá",
+      "đánh đàn",
+      "hát",
+      "nhảy",
+      "vẽ",
+      "chơi bóng đá",
+      "chạy bộ",
+      "tập thể dục",
+      "đi bộ",
+      "nấu món ngon",
+      "thêu thùa",
+      "làm bánh",
+      "ăn trầu",
+      "xem bóng đá"
+     ],
+     "phrases": [
+      "sáng nào cũng pha một ấm trà",
+      "đeo kính lên đọc báo",
+      "ngồi chơi cờ với các cụ trong xóm",
+      "chăm sóc chậu lan như báu vật",
+      "ngân nga một câu hát",
+      "tập thể dục mỗi sáng sớm",
+      "thích nấu món canh chua"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    },
+    {
+     "id": "cu-chi",
+     "name": "Cử chỉ, hành động nhỏ",
+     "words": [
+      "mỉm cười",
+      "gật đầu",
+      "lắc đầu",
+      "xoa đầu",
+      "vỗ vai",
+      "nheo mắt",
+      "chớp mắt",
+      "nhíu mày",
+      "cau mày",
+      "chống cằm",
+      "khoanh tay",
+      "phẩy tay",
+      "vẫy tay",
+      "nghiêng đầu",
+      "ôm chầm",
+      "cúi xuống",
+      "ngồi xuống",
+      "ngẩng lên",
+      "ngoảnh lại",
+      "đưa tay",
+      "chỉ tay",
+      "bế bổng",
+      "vuốt râu",
+      "vuốt tóc",
+      "đẩy gọng kính"
+     ],
+     "phrases": [
+      "mỉm cười gật đầu",
+      "xoa đầu em âu yếm",
+      "nheo mắt nhìn em",
+      "đẩy gọng kính lên khi đọc báo",
+      "vỗ vai em động viên",
+      "đưa tay lau mồ hôi",
+      "ôm chầm lấy em",
+      "cười xòa cho qua"
+     ],
+     "cau_hoi": [
+      "Người đó có cử chỉ nào quen thuộc mà em nhìn là nhận ra?",
+      "Khi vui, khi lo, người đó làm gì?"
+     ]
+    },
+    {
+     "id": "tre-em-hoat-dong",
+     "name": "Hoạt động của em bé, bạn nhỏ",
+     "words": [
+      "bi bô",
+      "bập bẹ",
+      "ê a",
+      "tập nói",
+      "tập đi",
+      "chập chững",
+      "lẫm chẫm",
+      "bò",
+      "lon ton",
+      "tung tăng",
+      "nhảy nhót",
+      "chạy nhảy",
+      "nô đùa",
+      "chơi đồ hàng",
+      "xếp hình",
+      "vẽ nguệch ngoạc",
+      "mè nheo",
+      "nũng nịu",
+      "làm nũng",
+      "khóc nhè",
+      "cười khanh khách",
+      "ngủ say",
+      "mút tay",
+      "giơ tay đòi bế"
+     ],
+     "phrases": [
+      "bi bô gọi mẹ",
+      "chập chững những bước đầu tiên",
+      "lon ton chạy theo em",
+      "cười khanh khách khi được trêu",
+      "giơ hai tay đòi bế",
+      "ngủ say sưa, miệng chúm chím",
+      "nũng nịu đòi kể chuyện"
+     ],
+     "cau_hoi": [
+      "Người đó thường làm việc này vào lúc nào?",
+      "Khi làm việc này, đôi tay, nét mặt người đó thế nào?",
+      "Em có giúp người đó làm việc này không?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tinh-cam",
+   "name": "Tình cảm của em (kết bài)",
+   "topics": [
+    {
+     "id": "cam-xuc",
+     "name": "Tình cảm, cảm xúc của em",
+     "words": [
+      "yêu quý",
+      "yêu thương",
+      "kính yêu",
+      "kính trọng",
+      "kính phục",
+      "khâm phục",
+      "biết ơn",
+      "mến phục",
+      "tự hào",
+      "hãnh diện",
+      "quý mến",
+      "gắn bó",
+      "thân thiết",
+      "nhớ",
+      "nhớ nhung",
+      "thương",
+      "xúc động",
+      "bồi hồi",
+      "ấm áp",
+      "hạnh phúc",
+      "vui sướng",
+      "an tâm",
+      "ân hận",
+      "áy náy",
+      "hối hận"
+     ],
+     "phrases": [
+      "em rất yêu quý",
+      "em vô cùng biết ơn",
+      "em luôn tự hào về",
+      "trong lòng em thấy ấm áp",
+      "em thấy mình thật hạnh phúc",
+      "em thầm cảm ơn",
+      "mỗi lần nhớ đến, em lại",
+      "em ân hận vì đã làm ... buồn"
+     ],
+     "cau_hoi": [
+      "Em cảm thấy thế nào khi ở bên người đó?",
+      "Có lần nào em làm người đó buồn hoặc vui không?",
+      "Nếu xa người đó, em sẽ nhớ điều gì nhất?"
+     ]
+    },
+    {
+     "id": "mong-uoc",
+     "name": "Mong ước, lời hứa",
+     "words": [
+      "mong",
+      "mong ước",
+      "ước mong",
+      "cầu chúc",
+      "hứa",
+      "cố gắng",
+      "chăm ngoan",
+      "học giỏi",
+      "vâng lời",
+      "sống lâu",
+      "mạnh khỏe",
+      "bình an"
+     ],
+     "phrases": [
+      "em mong ... luôn mạnh khỏe",
+      "em ước ... sống thật lâu bên em",
+      "em hứa sẽ chăm ngoan, học giỏi",
+      "em sẽ cố gắng để ... vui lòng",
+      "em muốn lớn thật nhanh để giúp đỡ"
+     ],
+     "cau_hoi": [
+      "Em mong điều gì cho người đó?",
+      "Em sẽ làm gì để người đó vui?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "theo-nguoi",
+   "name": "Theo người được tả",
+   "topics": [
+    {
+     "id": "ong-ba",
+     "name": "Ông, bà",
+     "words": [
+      "tóc bạc phơ",
+      "da nhăn nheo",
+      "lưng còng",
+      "móm mém",
+      "hiền từ",
+      "phúc hậu",
+      "minh mẫn",
+      "chậm rãi",
+      "từ tốn",
+      "kính lão",
+      "gậy trúc",
+      "ăn trầu",
+      "bỏm bẻm",
+      "kể chuyện cổ tích",
+      "hát ru",
+      "pha trà",
+      "chơi cờ",
+      "trồng cây"
+     ],
+     "phrases": [
+      "mái tóc bạc trắng như cước",
+      "nụ cười móm mém",
+      "đôi mắt đã mờ nhưng ánh nhìn rất hiền",
+      "miệng bỏm bẻm nhai trầu",
+      "chống gậy đi dạo quanh vườn",
+      "ngồi kể chuyện ngày xưa",
+      "búi tóc nhỏ sau gáy"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "bo",
+     "name": "Bố (ba, cha)",
+     "words": [
+      "cao lớn",
+      "vạm vỡ",
+      "rắn rỏi",
+      "rám nắng",
+      "trầm tính",
+      "nghiêm khắc",
+      "ít nói",
+      "mạnh mẽ",
+      "vững chãi",
+      "chở che",
+      "tận tụy",
+      "chăm chỉ",
+      "hài hước",
+      "khéo tay"
+     ],
+     "phrases": [
+      "đôi vai rộng vững chãi",
+      "bàn tay to và ấm",
+      "giọng nói trầm ấm",
+      "sửa xe, sửa đồ trong nhà",
+      "chở em đi học mỗi sáng",
+      "nghiêm khắc nhưng rất thương con",
+      "lưng áo ướt đẫm mồ hôi"
+     ],
+     "so_sanh": [
+      "bố vững chãi như một bóng cây lớn",
+      "đôi vai bố như chỗ dựa vững chắc"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "me",
+     "name": "Mẹ (má)",
+     "words": [
+      "dịu dàng",
+      "hiền dịu",
+      "đảm đang",
+      "tần tảo",
+      "chu đáo",
+      "ân cần",
+      "khéo léo",
+      "nhẹ nhàng",
+      "ấm áp",
+      "chịu thương chịu khó",
+      "hy sinh",
+      "tháo vát",
+      "xinh đẹp",
+      "giản dị"
+     ],
+     "phrases": [
+      "giọng ru ngọt ngào",
+      "bàn tay mẹ ấm áp",
+      "mẹ thức khuya dậy sớm",
+      "lúi húi trong bếp",
+      "mái tóc thoang thoảng mùi bồ kết",
+      "mắt mẹ thâm quầng vì thức đêm chăm em"
+     ],
+     "so_sanh": [
+      "mẹ hiền như cô Tấm",
+      "tình mẹ bao la như biển cả",
+      "giọng mẹ ngọt như dòng sữa"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "anh-chi-em",
+     "name": "Anh, chị, em",
+     "words": [
+      "tinh nghịch",
+      "lém lỉnh",
+      "dễ thương",
+      "nhường nhịn",
+      "chăm chỉ",
+      "học giỏi",
+      "ga lăng",
+      "điệu đà",
+      "hiền lành",
+      "hiếu động",
+      "ngoan ngoãn",
+      "bướng bỉnh",
+      "nũng nịu"
+     ],
+     "phrases": [
+      "chị dạy em học bài",
+      "anh chở em đi chơi",
+      "hai anh em chơi đùa cả buổi chiều",
+      "giành đồ chơi rồi lại làm lành",
+      "chị tết tóc cho em",
+      "anh nhường phần quà cho em"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "em-be",
+     "name": "Em bé",
+     "words": [
+      "bụ bẫm",
+      "mũm mĩm",
+      "phúng phính",
+      "trắng hồng",
+      "bầu bĩnh",
+      "xinh xắn",
+      "kháu khỉnh",
+      "bi bô",
+      "bập bẹ",
+      "chập chững",
+      "lẫm chẫm",
+      "ngây thơ",
+      "hồn nhiên",
+      "nũng nịu",
+      "đáng yêu",
+      "thơm mùi sữa"
+     ],
+     "phrases": [
+      "đôi má phúng phính",
+      "cái miệng chúm chím",
+      "đôi mắt đen láy tròn xoe",
+      "mái tóc tơ mềm mại",
+      "bàn tay nhỏ xíu, mũm mĩm",
+      "mới mọc mấy chiếc răng sữa",
+      "thơm mùi sữa",
+      "bi bô gọi mẹ",
+      "chập chững bước đi"
+     ],
+     "so_sanh": [
+      "má phúng phính như hai quả táo",
+      "tay chân mũm mĩm như những ngó sen",
+      "mắt tròn như hai hạt nhãn",
+      "em bé xinh như búp bê"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "thay-co",
+     "name": "Thầy giáo, cô giáo",
+     "words": [
+      "hiền dịu",
+      "tận tụy",
+      "ân cần",
+      "nghiêm khắc",
+      "kiên nhẫn",
+      "yêu nghề",
+      "thương học trò",
+      "nắn nót",
+      "truyền cảm",
+      "dịu dàng",
+      "công bằng",
+      "vui tính"
+     ],
+     "phrases": [
+      "tà áo dài thướt tha",
+      "nét chữ nắn nót trên bảng",
+      "giọng giảng bài ấm áp",
+      "bụi phấn vương trên tóc",
+      "cầm tay uốn từng nét chữ",
+      "ánh mắt hiền từ dõi theo học trò",
+      "người mẹ thứ hai của em"
+     ],
+     "so_sanh": [
+      "cô hiền như mẹ",
+      "cô như người mẹ thứ hai",
+      "thầy như người lái đò đưa học trò sang sông"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "ban-be",
+     "name": "Bạn bè",
+     "words": [
+      "thân thiết",
+      "tốt bụng",
+      "vui tính",
+      "hòa đồng",
+      "nhanh nhẹn",
+      "chăm học",
+      "học giỏi",
+      "tinh nghịch",
+      "lém lỉnh",
+      "thật thà",
+      "hay giúp đỡ",
+      "nhút nhát",
+      "mạnh dạn"
+     ],
+     "phrases": [
+      "cùng em đến trường mỗi ngày",
+      "giảng bài cho em khi em chưa hiểu",
+      "cho em mượn bút",
+      "chia sẻ quà bánh",
+      "cùng nhau chơi nhảy dây",
+      "đôi bạn thân như hình với bóng"
+     ],
+     "so_sanh": [
+      "thân nhau như hình với bóng",
+      "hai đứa như anh em ruột"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    },
+    {
+     "id": "nguoi-lao-dong",
+     "name": "Người lao động quanh em (bác nông dân, cô lao công, chú công an...)",
+     "words": [
+      "cần cù",
+      "chăm chỉ",
+      "tận tụy",
+      "nhiệt tình",
+      "vui vẻ",
+      "rám nắng",
+      "chai sạn",
+      "nhanh nhẹn",
+      "dũng cảm",
+      "trách nhiệm",
+      "giản dị",
+      "mộc mạc"
+     ],
+     "phrases": [
+      "làm việc dưới nắng gắt",
+      "quét sạch từng con đường khi trời còn tối",
+      "đứng giữa ngã tư điều khiển xe cộ",
+      "chiếc áo đã bạc màu",
+      "mồ hôi lấm tấm trên trán",
+      "nụ cười hiền lành, chất phác"
+     ],
+     "cau_hoi": [
+      "Điều gì ở người này khác với những người khác?",
+      "Em nhớ nhất một kỷ niệm nào với người này?"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "khung-cau",
+   "name": "Khung câu và từ nối",
+   "topics": [
+    {
+     "id": "mo-bai",
+     "name": "Mở bài (khung câu, em tự điền)",
+     "phrases": [
+      "Trong gia đình em, người em yêu quý nhất là ...",
+      "Người mà em luôn kính trọng là ...",
+      "Em có một người ... rất đặc biệt, đó là ...",
+      "Mỗi khi nhắc đến ..., em lại nhớ đến ...",
+      "Năm nay ... đã ... tuổi."
+     ],
+     "ghi_chu": "Mở bài trực tiếp: giới thiệu ngay người được tả. Mở bài gián tiếp: kể một chuyện hay một kỷ niệm rồi mới giới thiệu."
+    },
+    {
+     "id": "than-bai-noi",
+     "name": "Từ nối, chuyển ý trong thân bài",
+     "words": [
+      "trước hết",
+      "đầu tiên",
+      "nổi bật nhất là",
+      "điều em ấn tượng nhất là",
+      "không chỉ ... mà còn",
+      "bên cạnh đó",
+      "ngoài ra",
+      "hơn thế nữa",
+      "đặc biệt",
+      "mỗi khi",
+      "mỗi lần",
+      "những lúc",
+      "có lần",
+      "còn nhớ",
+      "tuy ... nhưng",
+      "vì thế",
+      "chính vì vậy"
+     ],
+     "phrases": [
+      "Không chỉ có ... đẹp, ... còn rất ...",
+      "Mỗi khi ..., ... lại ...",
+      "Em còn nhớ có lần ...",
+      "Điều em nhớ nhất ở ... là ...",
+      "Tuy ... nhưng ..."
+     ]
+    },
+    {
+     "id": "ket-bai",
+     "name": "Kết bài (khung câu, em tự điền)",
+     "phrases": [
+      "Em rất yêu quý ... vì ...",
+      "Em mong ... luôn ...",
+      "Em sẽ cố gắng ... để ...",
+      "Dù sau này ..., em vẫn luôn nhớ ...",
+      "... mãi là ... trong lòng em."
+     ],
+     "ghi_chu": "Kết bài nêu tình cảm, mong ước hoặc lời hứa của em với người được tả."
+    },
+    {
+     "id": "bien-phap",
+     "name": "Gợi ý dùng biện pháp tu từ",
+     "phrases": [
+      "So sánh: ... như ...",
+      "So sánh: ... tựa như ...",
+      "So sánh: ... giống như ...",
+      "Nhân hóa đồ vật quanh người được tả: chiếc gậy, chiếc nón ... cũng như biết ...",
+      "Điệp từ: Mẹ là ..., mẹ là ..., mẹ là ..."
+     ],
+     "ghi_chu": "Mỗi bài nên có ít nhất 1–2 hình ảnh so sánh do em tự nghĩ. Đừng chép nguyên hình ảnh có sẵn: hãy thay đổi cho đúng với người em tả."
+    }
+   ],
+   "ghi_chu": "Khung câu chỉ là gợi ý. Em tự điền và tự sửa cho đúng với người em tả."
+  },
+  {
+   "id": "quan-sat",
+   "name": "Câu hỏi gợi ý quan sát (bước 1)",
+   "topics": [
+    {
+     "id": "ngoai-hinh-q",
+     "name": "Ngoại hình",
+     "cau_hoi": [
+      "Người đó bao nhiêu tuổi, làm nghề gì?",
+      "Dáng người, khuôn mặt thế nào?",
+      "Mái tóc, đôi mắt, nụ cười có gì đặc biệt?",
+      "Người đó thường mặc gì?",
+      "Có một nét nào mà chỉ người đó mới có?"
+     ]
+    },
+    {
+     "id": "tinh-tinh-q",
+     "name": "Tính tình",
+     "cau_hoi": [
+      "Người đó hiền, vui tính hay nghiêm khắc?",
+      "Một việc làm nào cho thấy tính tình đó?",
+      "Mọi người xung quanh nói gì về người đó?"
+     ]
+    },
+    {
+     "id": "hoat-dong-q",
+     "name": "Hoạt động, lời nói",
+     "cau_hoi": [
+      "Một ngày của người đó thường diễn ra thế nào?",
+      "Khi làm việc, đôi tay và nét mặt người đó ra sao?",
+      "Người đó hay nói câu gì với em?",
+      "Người đó có thói quen hay sở thích gì?"
+     ]
+    },
+    {
+     "id": "tinh-cam-q",
+     "name": "Tình cảm của em",
+     "cau_hoi": [
+      "Em nhớ nhất kỷ niệm nào với người đó?",
+      "Em cảm thấy thế nào khi ở bên người đó?",
+      "Em mong điều gì cho người đó?"
+     ]
+    }
+   ]
+  }
+ ]
+}

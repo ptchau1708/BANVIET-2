@@ -65,6 +65,13 @@ Em rất yêu quý bà nội. Em mong bà luôn mạnh khỏe để sống thậ
     suggestedWords: ['bạc phơ', 'hiền từ', 'ấm áp', 'nếp nhăn', 'búi gọn', 'tần tảo'],
     suggestedWordTopic: 'Mái tóc & khuôn mặt',
     savedWords: ['bạc phơ', 'hiền từ', 'ấm áp'],
+    khoTuStats: {
+      mo_kho: 0,
+      goi_y_tu_kho: 0,
+      tu_da_luu: 0,
+      auto_fallback: 0,
+    },
+    seenKhoQuestions: [],
     draftText: sampleDraft,
     draftLocked: false,
     draftLockedAt: null,

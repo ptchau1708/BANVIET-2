@@ -1,642 +1,312 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { FileText, History } from 'lucide-react';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useCallback, useEffect, useState } from 'react';
+import { BookOpen, GraduationCap, Loader2, LogOut } from 'lucide-react';
 import {
-  FeedbackHistoryItem,
-  ObservationBoxKey,
-  OutlineData,
-  PersonChoice,
-  SelfCheckAnswer,
-  SelfCheckState,
-  SelfRatingState,
-  StepNumber,
-  WritingProject,
-} from './types';
+  AuthConfigResponse,
+  StudentAssignmentSummary,
+  StudentProfile,
+  TeacherClassSummary,
+  TeacherProfile,
+  fetchAuthConfig,
+  fetchStudentMe,
+  fetchTeacherMe,
+} from './utils/api';
+import { clearSession, getSessionRole, getSessionToken } from './utils/session';
 import {
-  MAX_ESSAY_REVIEWS,
-  canNavigateToStep,
-  createEmptyProject,
-  getDisplayPersonName,
-  getMaxUnlockedStep,
-  syncObservationsToOutline,
-} from './utils/writingLogic';
-import { createSampleGrandmaProject } from './data/sampleData';
-import { fetchGoiY, fetchGopYBai, fetchKiemTraDanY } from './utils/api';
+  clearLtiSessionMetadata,
+  consumeLaunchAssignmentId,
+  getBrowserActiveParentOrigin,
+  initOpenEduIframeBridge,
+  isEmbeddedInIframe,
+  isLtiLaunchMode,
+} from './utils/openEduBridge';
 import { MascotAvatar } from './components/MascotAvatar';
 import { OfflineIndicator, PWAInstallButton } from './components/PWAInstallButton';
-import { StepProgressBar } from './components/StepProgressBar';
-import { Step1Observe } from './components/Step1Observe';
-import { Step2Outline } from './components/Step2Outline';
-import { Step3Write } from './components/Step3Write';
-import { Step4Revise } from './components/Step4Revise';
-import { Step5Share } from './components/Step5Share';
-import { FeedbackHistoryDrawer } from './components/FeedbackHistoryDrawer';
+import { StudentLogin } from './components/StudentLogin';
+import { StudentHome } from './components/StudentHome';
+import { StudentWorkspace } from './components/StudentWorkspace';
+import { TeacherLogin } from './components/TeacherLogin';
+import { TeacherDashboard } from './components/TeacherDashboard';
 
-const STORAGE_KEY = 'ban_viet_project_v1';
+type RouteArea = 'student' | 'teacher';
 
-function loadInitialProject(): WritingProject {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return createEmptyProject();
-    const parsed = JSON.parse(raw) as Partial<WritingProject>;
-    const base = createEmptyProject();
-    return {
-      ...base,
-      ...parsed,
-      observations: { ...base.observations, ...(parsed.observations ?? {}) },
-      outline: { ...base.outline, ...(parsed.outline ?? {}) },
-      selfCheck: { ...base.selfCheck, ...(parsed.selfCheck ?? {}) },
-      selfRating: { ...base.selfRating, ...(parsed.selfRating ?? {}) },
-      chatMessages: Array.isArray(parsed.chatMessages) ? parsed.chatMessages : [],
-      suggestedWords: Array.isArray(parsed.suggestedWords) ? parsed.suggestedWords : [],
-      savedWords: Array.isArray(parsed.savedWords) ? parsed.savedWords : [],
-      essayReviews: Array.isArray(parsed.essayReviews) ? parsed.essayReviews : [],
-      feedbackHistory: Array.isArray(parsed.feedbackHistory) ? parsed.feedbackHistory : [],
-    };
-  } catch {
-    return createEmptyProject();
-  }
+function readRouteArea(): RouteArea {
+  return window.location.pathname.startsWith('/giao-vien') ? 'teacher' : 'student';
 }
 
 export default function App() {
-  const [project, setProject] = useState<WritingProject>(() => loadInitialProject());
-  const projectRef = useRef<WritingProject>(project);
-  projectRef.current = project;
+  const [routeArea, setRouteArea] = useState<RouteArea>(() => readRouteArea());
+  const [authConfig, setAuthConfig] = useState<AuthConfigResponse>({
+    databaseConfigured: true,
+    googleConfigured: true,
+    ltiEnabled: false,
+    openEduWebOrigin: '',
+    openEduTeacherOrigin: '',
+    openEduAllowedOrigins: [],
+  });
+  const [inIframe] = useState<boolean>(() => isEmbeddedInIframe());
+  const [ltiMode, setLtiMode] = useState<boolean>(() => isLtiLaunchMode());
 
-  const [historyOpen, setHistoryOpen] = useState(false);
-  const [loadingBox, setLoadingBox] = useState<ObservationBoxKey | null>(null);
-  const [loadingChat, setLoadingChat] = useState(false);
-  const [loadingWords, setLoadingWords] = useState(false);
-  const [loadingCheck, setLoadingCheck] = useState(false);
-  const [loadingReview, setLoadingReview] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [sampleNotice, setSampleNotice] = useState(false);
+  // Student session state
+  const [studentLoading, setStudentLoading] = useState(false);
+  const [studentProfile, setStudentProfile] = useState<StudentProfile | null>(null);
+  const [studentAssignments, setStudentAssignments] = useState<StudentAssignmentSummary[]>([]);
+  const [activeAssignmentId, setActiveAssignmentId] = useState<string | null>(null);
 
-  const persistNow = useCallback((stateToSave: WritingProject) => {
+  // Teacher session state
+  const [teacherLoading, setTeacherLoading] = useState(false);
+  const [teacherProfile, setTeacherProfile] = useState<TeacherProfile | null>(null);
+  const [teacherClasses, setTeacherClasses] = useState<TeacherClassSummary[]>([]);
+
+  const navigate = useCallback((area: RouteArea) => {
+    const nextPath = area === 'teacher' ? '/giao-vien' : '/';
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, '', nextPath);
+    }
+    setRouteArea(area);
+    setActiveAssignmentId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  useEffect(() => {
+    const onPop = () => {
+      setRouteArea(readRouteArea());
+      setActiveAssignmentId(null);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
+
+  useEffect(() => {
+    fetchAuthConfig()
+      .then((cfg) => setAuthConfig(cfg))
+      .catch(() => {
+        // ignore transient errors
+      });
+  }, []);
+
+  const allowedOpenEduOrigins =
+    authConfig.openEduAllowedOrigins && authConfig.openEduAllowedOrigins.length > 0
+      ? authConfig.openEduAllowedOrigins
+      : [authConfig.openEduWebOrigin, authConfig.openEduTeacherOrigin].filter(
+          (v): v is string => Boolean(v)
+        );
+
+  // Initialize strict OPEN-EDU iframe postMessage bridge locked to the exact embedding parent origin
+  useEffect(() => {
+    if (!inIframe || allowedOpenEduOrigins.length === 0) return;
+    return initOpenEduIframeBridge(allowedOpenEduOrigins);
+  }, [inIframe, authConfig.openEduWebOrigin, authConfig.openEduTeacherOrigin, authConfig.openEduAllowedOrigins]);
+
+  const loadStudentSession = useCallback(async () => {
+    const token = getSessionToken();
+    const role = getSessionRole();
+    if (!token || role !== 'student') {
+      setStudentProfile(null);
+      setStudentAssignments([]);
+      return;
+    }
+    setStudentLoading(true);
     try {
-      const payload: WritingProject = {
-        ...stateToSave,
-        lastSavedAt: new Date().toISOString(),
-      };
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      const data = await fetchStudentMe();
+      setStudentProfile(data.student);
+      setStudentAssignments(data.assignments);
+      setLtiMode(isLtiLaunchMode());
+      const launchedId = consumeLaunchAssignmentId();
+      if (launchedId) {
+        setActiveAssignmentId(launchedId);
+      }
     } catch {
-      // Ignore storage quota errors gracefully
+      clearSession();
+      setStudentProfile(null);
+      setStudentAssignments([]);
+    } finally {
+      setStudentLoading(false);
     }
   }, []);
 
-  // Auto-save to localStorage every 5 seconds
+  const loadTeacherSession = useCallback(async () => {
+    const token = getSessionToken();
+    const role = getSessionRole();
+    if (!token || role !== 'teacher') {
+      setTeacherProfile(null);
+      setTeacherClasses([]);
+      return;
+    }
+    setTeacherLoading(true);
+    try {
+      const data = await fetchTeacherMe();
+      setTeacherProfile(data.teacher);
+      setTeacherClasses(data.classes);
+      setLtiMode(isLtiLaunchMode());
+    } catch {
+      clearSession();
+      setTeacherProfile(null);
+      setTeacherClasses([]);
+    } finally {
+      setTeacherLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      persistNow(projectRef.current);
-    }, 5000);
-    return () => window.clearInterval(timer);
-  }, [persistNow]);
-
-  // Also persist immediately before leaving page
-  useEffect(() => {
-    const handleBeforeUnload = () => persistNow(projectRef.current);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [persistNow]);
-
-  const maxUnlockedStep = getMaxUnlockedStep(project);
-
-  const goToStep = (step: StepNumber) => {
-    setErrorMsg(null);
-    if (!canNavigateToStep(project, step)) return;
-    if (step === 3) {
-      setHistoryOpen(false);
+    if (routeArea === 'student') {
+      void loadStudentSession();
+    } else {
+      void loadTeacherSession();
     }
-    setProject((prev) => {
-      let next = { ...prev, currentStep: step };
-      if (step === 2 && !prev.outlineSyncedFromStep1) {
-        next = {
-          ...next,
-          outline: syncObservationsToOutline(
-            prev.observations,
-            prev.outline,
-            getDisplayPersonName(prev)
-          ),
-          outlineSyncedFromStep1: true,
-        };
-      }
-      persistNow(next);
-      return next;
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [routeArea, loadStudentSession, loadTeacherSession]);
+
+  const handleLogout = () => {
+    clearSession();
+    clearLtiSessionMetadata();
+    setLtiMode(false);
+    setStudentProfile(null);
+    setStudentAssignments([]);
+    setActiveAssignmentId(null);
+    setTeacherProfile(null);
+    setTeacherClasses([]);
   };
 
-  const appendHistory = (
-    prev: WritingProject,
-    item: Omit<FeedbackHistoryItem, 'id' | 'timestamp'>
-  ): FeedbackHistoryItem[] => {
-    return [
-      ...prev.feedbackHistory,
-      {
-        ...item,
-        id: `fh-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        timestamp: new Date().toISOString(),
-      },
-    ];
-  };
-
-  const handleLoadSampleData = () => {
-    const sample = createSampleGrandmaProject();
-    setErrorMsg(null);
-    setHistoryOpen(false);
-    setProject(sample);
-    persistNow(sample);
-    setSampleNotice(true);
-    window.setTimeout(() => setSampleNotice(false), 4500);
-  };
-
-  const handleStartNewEssay = () => {
-    const fresh = createEmptyProject();
-    setErrorMsg(null);
-    setProject(fresh);
-    persistNow(fresh);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Step 1 handlers
-  const handleSelectPerson = (choice: PersonChoice) => {
-    setProject((prev) => {
-      const next = { ...prev, personChoice: choice };
-      persistNow(next);
-      return next;
-    });
-  };
-
-  const handleChangeCustomPerson = (label: string) => {
-    setProject((prev) => ({ ...prev, customPersonLabel: label }));
-  };
-
-  const handleAddNote = (box: ObservationBoxKey, note: string) => {
-    setProject((prev) => {
-      const next = {
-        ...prev,
-        outlineSyncedFromStep1: false,
-        observations: {
-          ...prev.observations,
-          [box]: [...prev.observations[box], note],
-        },
-      };
-      persistNow(next);
-      return next;
-    });
-  };
-
-  const handleRemoveNote = (box: ObservationBoxKey, index: number) => {
-    setProject((prev) => {
-      const next = {
-        ...prev,
-        observations: {
-          ...prev.observations,
-          [box]: prev.observations[box].filter((_, i) => i !== index),
-        },
-      };
-      persistNow(next);
-      return next;
-    });
-  };
-
-  const handleAskMemoryPrompt = async (box: ObservationBoxKey, boxTitle: string) => {
-    const person = getDisplayPersonName(project);
-    if (!person) return;
-    setErrorMsg(null);
-    setLoadingBox(box);
-    try {
-      const res = await fetchGoiY({
-        buoc: 1,
-        che_do: 'quan_sat',
-        nguoi_ta: person,
-        muc: boxTitle,
-        ghi_chu: project.observations[box],
-      });
-      const question = res.tra_loi || 'Em nhớ thêm chi tiết nhỏ nào về phần này nữa không?';
-      setProject((prev) => {
-        const next: WritingProject = {
-          ...prev,
-          aiCallCount: prev.aiCallCount + 1,
-          observationPrompts: {
-            ...prev.observationPrompts,
-            [box]: question,
-          },
-          feedbackHistory: appendHistory(prev, {
-            step: 1,
-            kind: 'quan_sat',
-            title: `Gợi nhớ ô ${boxTitle}`,
-            promptSummary: `Tả ${person} — ${boxTitle}`,
-            responseSummary: question,
-          }),
-        };
-        persistNow(next);
-        return next;
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Không gọi được Bạn Viết lúc này.');
-    } finally {
-      setLoadingBox(null);
-    }
-  };
-
-  // Step 2 handlers
-  const handleUpdateOutline = (nextOutline: OutlineData) => {
-    setProject((prev) => ({
-      ...prev,
-      outline: nextOutline,
-      outlineCheck: null,
-    }));
-  };
-
-  const handleSendChat = async (message: string) => {
-    const person = getDisplayPersonName(project);
-    setErrorMsg(null);
-    setLoadingChat(true);
-
-    const userMsg = {
-      id: `u-${Date.now()}`,
-      role: 'user' as const,
-      text: message,
-      timestamp: new Date().toISOString(),
-    };
-
-    const nextMessages = [...project.chatMessages, userMsg];
-    setProject((prev) => ({ ...prev, chatMessages: nextMessages }));
-
-    const outlineSummary = [
-      `Mở bài: ${project.outline.moBai}`,
-      `Ngoại hình: ${project.outline.ngoaiHinh.join('; ')}`,
-      `Tính tình, hoạt động: ${project.outline.tinhTinhHoatDong.join('; ')}`,
-      `Kết bài: ${project.outline.ketBai}`,
-    ].join('\n');
-
-    try {
-      const res = await fetchGoiY({
-        buoc: 2,
-        che_do: 'tro_chuyen',
-        nguoi_ta: person,
-        tin_nhan: message,
-        lich_su_chat: nextMessages.slice(-6).map((m) => ({ role: m.role, text: m.text })),
-        dan_y_tom_tat: outlineSummary,
-      });
-
-      const replyText =
-        res.tra_loi || 'Ý của bạn thú vị lắm! Bạn nhớ thêm chi tiết nhỏ nào nữa không?';
-
-      setProject((prev) => {
-        const next: WritingProject = {
-          ...prev,
-          aiCallCount: prev.aiCallCount + 1,
-          chatMessages: [
-            ...prev.chatMessages,
-            {
-              id: `a-${Date.now()}`,
-              role: 'assistant',
-              text: replyText,
-              timestamp: new Date().toISOString(),
-            },
-          ],
-          feedbackHistory: appendHistory(prev, {
-            step: 2,
-            kind: 'tro_chuyen',
-            title: 'Trò chuyện lập ý',
-            promptSummary: message,
-            responseSummary: replyText,
-          }),
-        };
-        persistNow(next);
-        return next;
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Bạn Viết chưa trả lời được lúc này.');
-    } finally {
-      setLoadingChat(false);
-    }
-  };
-
-  const handleFetchWordBank = async (topic: string) => {
-    const person = getDisplayPersonName(project);
-    setErrorMsg(null);
-    setLoadingWords(true);
-    try {
-      const res = await fetchGoiY({
-        buoc: 2,
-        che_do: 'kho_tu_ngu',
-        nguoi_ta: person,
-        muc: topic,
-        ghi_chu: [...project.outline.ngoaiHinh, ...project.outline.tinhTinhHoatDong].slice(0, 8),
-      });
-      const words = res.tu_ngu ?? [];
-      setProject((prev) => {
-        const next: WritingProject = {
-          ...prev,
-          aiCallCount: prev.aiCallCount + 1,
-          suggestedWords: words,
-          suggestedWordTopic: topic,
-          feedbackHistory: appendHistory(prev, {
-            step: 2,
-            kind: 'kho_tu_ngu',
-            title: `Kho từ ngữ: ${topic}`,
-            promptSummary: `Tìm từ tả ${person.toLowerCase()} — ${topic}`,
-            responseSummary: res.tra_loi || `Gợi ý ${words.length} từ/cụm từ ngắn.`,
-            details: words.length > 0 ? [words.join(' · ')] : undefined,
-          }),
-        };
-        persistNow(next);
-        return next;
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Không mở được kho từ ngữ lúc này.');
-    } finally {
-      setLoadingWords(false);
-    }
-  };
-
-  const handleToggleSavedWord = (word: string) => {
-    setProject((prev) => {
-      const exists = prev.savedWords.includes(word);
-      const savedWords = exists
-        ? prev.savedWords.filter((w) => w !== word)
-        : [...prev.savedWords, word];
-      const next = { ...prev, savedWords };
-      persistNow(next);
-      return next;
-    });
-  };
-
-  const handleCheckOutline = async () => {
-    const person = getDisplayPersonName(project);
-    setErrorMsg(null);
-    setLoadingCheck(true);
-    try {
-      const res = await fetchKiemTraDanY({
-        nguoi_ta: person,
-        dan_y: project.outline,
-      });
-      const checkedAt = new Date().toISOString();
-      setProject((prev) => {
-        const next: WritingProject = {
-          ...prev,
-          aiCallCount: prev.aiCallCount + 1,
-          outlineCheck: { ...res, checkedAt },
-          feedbackHistory: appendHistory(prev, {
-            step: 2,
-            kind: 'kiem_tra_dan_y',
-            title: 'Kiểm tra dàn ý',
-            responseSummary: `${res.du_3_phan ? 'Đủ 3 phần' : 'Chưa đủ 3 phần'} · ${res.so_chi_tiet_ngoai_hinh} chi tiết ngoại hình · ${res.so_chi_tiet_tinh_tinh_hoat_dong} chi tiết tính tình, hoạt động.`,
-            details: [...res.phan_con_thieu, ...res.cau_hoi_goi_y],
-          }),
-        };
-        persistNow(next);
-        return next;
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Chưa kiểm tra được dàn ý lúc này.');
-    } finally {
-      setLoadingCheck(false);
-    }
-  };
-
-  // Step 3 handlers
-  const handleChangeDraft = (nextText: string) => {
-    setProject((prev) => {
-      if (prev.draftLocked) return prev;
-      return { ...prev, draftText: nextText };
-    });
-  };
-
-  const handleLockDraft = () => {
-    setProject((prev) => {
-      if (prev.draftLocked || !prev.draftText.trim()) return prev;
-      const next: WritingProject = {
-        ...prev,
-        draftLocked: true,
-        draftLockedAt: new Date().toISOString(),
-        revisedText: prev.draftText,
-        currentStep: 4,
-      };
-      persistNow(next);
-      return next;
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Step 4 handlers
-  const handleChangeRevised = (nextText: string) => {
-    setProject((prev) => ({ ...prev, revisedText: nextText }));
-  };
-
-  const handleUpdateSelfCheck = (key: keyof SelfCheckState, value: SelfCheckAnswer) => {
-    setProject((prev) => {
-      const next = {
-        ...prev,
-        selfCheck: { ...prev.selfCheck, [key]: value },
-      };
-      persistNow(next);
-      return next;
-    });
-  };
-
-  const handleRequestEssayReview = async () => {
-    if (project.essayReviews.length >= MAX_ESSAY_REVIEWS) return;
-    const person = getDisplayPersonName(project);
-    const attemptNumber = project.essayReviews.length + 1;
-    setErrorMsg(null);
-    setLoadingReview(true);
-    try {
-      const res = await fetchGopYBai({
-        nguoi_ta: person,
-        bai_van: project.revisedText,
-        lan_thu: attemptNumber,
-      });
-      const reviewEntry = {
-        id: `rev-${Date.now()}`,
-        attemptNumber,
-        loi_khen: res.loi_khen,
-        gop_y: res.gop_y,
-        timestamp: new Date().toISOString(),
-      };
-      setProject((prev) => {
-        const next: WritingProject = {
-          ...prev,
-          aiCallCount: prev.aiCallCount + 1,
-          essayReviews: [...prev.essayReviews, reviewEntry],
-          feedbackHistory: appendHistory(prev, {
-            step: 4,
-            kind: 'gop_y_bai',
-            title: `Bạn Viết đọc giúp bài (Lần ${attemptNumber}/3)`,
-            responseSummary: res.loi_khen,
-            details: res.gop_y.map((g) => `“${g.trich_doan}” — ${g.cau_hoi_goi_y}`),
-          }),
-        };
-        persistNow(next);
-        return next;
-      });
-    } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : 'Bạn Viết chưa đọc xong bài lúc này.');
-    } finally {
-      setLoadingReview(false);
-    }
-  };
-
-  // Step 5 handlers
-  const handleUpdateRating = (key: keyof SelfRatingState, stars: number) => {
-    setProject((prev) => {
-      const next = {
-        ...prev,
-        selfRating: { ...prev.selfRating, [key]: stars },
-      };
-      persistNow(next);
-      return next;
-    });
-  };
+  const isLoggedInStudent = routeArea === 'student' && Boolean(studentProfile);
+  const isLoggedInTeacher = routeArea === 'teacher' && Boolean(teacherProfile);
+  const activeOpenEduParentOrigin = inIframe
+    ? getBrowserActiveParentOrigin(allowedOpenEduOrigins)
+    : '';
+  // Hide standalone top header when launched inside an allowed OPEN-EDU iframe
+  const hideStandaloneHeader = inIframe && (ltiMode || Boolean(activeOpenEduParentOrigin));
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F6FAF7] text-[#1C2A24]">
-      {/* Compact single-row sticky top header (keeps mobile sticky height <= 8% viewport) */}
-      <header className="no-print sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#DDE7E2]">
-        <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
-          {/* Brand wordmark */}
+      {/* Compact single-row sticky header (hidden inside OPEN-EDU iframe) */}
+      {!hideStandaloneHeader && (
+        <header className="no-print sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-[#DDE7E2]">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2">
           <button
             type="button"
-            onClick={() => goToStep(1)}
-            className="flex items-center gap-2 text-left whitespace-nowrap shrink-0 cursor-pointer min-h-[44px]"
+            onClick={() => {
+              if (isLoggedInStudent && activeAssignmentId) {
+                setActiveAssignmentId(null);
+                void loadStudentSession();
+              } else {
+                navigate(routeArea);
+              }
+            }}
+            className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer"
           >
-            <MascotAvatar size="sm" className="!w-9 !h-9 sm:!w-10 sm:!h-10 rounded-xl" />
-            <span className="text-[19px] sm:text-xl font-bold tracking-tight text-[#14532D]">
-              Bạn Viết
-            </span>
+            <MascotAvatar size="sm" />
+            <div className="min-w-0 leading-tight">
+              <div className="text-[19px] sm:text-xl font-bold text-[#14532D] truncate">
+                Bạn Viết
+              </div>
+              <div className="hidden sm:block text-[13px] text-[#4B6358] truncate">
+                {routeArea === 'teacher'
+                  ? 'Cổng Giáo viên · Tập làm văn lớp 5'
+                  : 'Tự lập ý, tự viết, tự sửa bài văn lớp 5'}
+              </div>
+            </div>
           </button>
 
-          {/* Clean single-line utility actions */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={handleLoadSampleData}
-              className="inline-flex items-center gap-1.5 min-h-[44px] px-2.5 sm:px-3.5 py-2 rounded-xl border border-[#DDE7E2] bg-[#F6FAF7] text-[#1C2A24] text-[16px] sm:text-[18px] font-semibold hover:bg-[#ECFDF5] hover:border-[#86EFAC] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-[#15803D] shrink-0" aria-hidden="true" />
-              <span>Dữ liệu mẫu</span>
-            </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <PWAInstallButton />
 
-            {/* Hide AI history button completely during Step 3 (AI OFF) */}
-            {project.currentStep !== 3 && (
+            {!isLoggedInStudent && !isLoggedInTeacher && (
               <button
                 type="button"
-                onClick={() => setHistoryOpen(true)}
-                aria-label={`Mở lịch sử góp ý (${project.feedbackHistory.length} lượt)`}
-                className="inline-flex items-center gap-1 sm:gap-1.5 min-h-[44px] px-2.5 sm:px-3.5 py-2 rounded-xl border border-[#DDE7E2] bg-white text-[#1C2A24] text-[16px] sm:text-[18px] font-semibold hover:bg-[#F1F5F9] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                onClick={() => navigate(routeArea === 'teacher' ? 'student' : 'teacher')}
+                className="inline-flex items-center gap-1.5 min-h-[42px] px-3 sm:px-4 py-1.5 rounded-xl border border-[#DDE7E2] bg-[#F6FAF7] text-[#1C2A24] text-[15px] sm:text-[16px] font-semibold hover:bg-[#ECFDF5] transition-colors whitespace-nowrap cursor-pointer"
               >
-                <History className="w-4 h-4 sm:w-5 sm:h-5 text-[#0369A1] shrink-0" aria-hidden="true" />
-                <span className="hidden md:inline">Lịch sử góp ý</span>
-                <span className="tabular-nums text-[#0369A1]">
-                  ({project.feedbackHistory.length})
-                </span>
+                {routeArea === 'teacher' ? (
+                  <>
+                    <BookOpen className="w-4 h-4 text-[#15803D] shrink-0" aria-hidden="true" />
+                    <span>Học sinh</span>
+                  </>
+                ) : (
+                  <>
+                    <GraduationCap className="w-4 h-4 text-[#0369A1] shrink-0" aria-hidden="true" />
+                    <span>Giáo viên</span>
+                  </>
+                )}
               </button>
             )}
 
-            <PWAInstallButton />
+            {(isLoggedInStudent || isLoggedInTeacher) && (
+              <>
+                <span className="hidden md:inline-block text-[15px] font-semibold text-[#14532D] max-w-[180px] truncate">
+                  {isLoggedInStudent
+                    ? studentProfile?.nickname
+                    : teacherProfile?.display_name || teacherProfile?.email}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-1.5 min-h-[42px] px-3 sm:px-4 py-1.5 rounded-xl border border-[#CBD5E1] bg-white text-[#334155] text-[15px] sm:text-[16px] font-semibold hover:bg-[#F1F5F9] transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span>Đăng xuất</span>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
-
-      {/* 5-step progress bar (non-sticky so mobile sticky cap stays tiny) */}
-      <StepProgressBar
-        currentStep={project.currentStep}
-        maxUnlockedStep={maxUnlockedStep}
-        onSelectStep={goToStep}
-      />
-
-      {/* Sample loaded confirmation toast */}
-      {sampleNotice && (
-        <div
-          role="status"
-          className="no-print max-w-6xl w-full mx-auto px-4 sm:px-6 pt-4"
-        >
-          <div className="rounded-2xl bg-[#ECFDF5] border border-[#86EFAC] px-5 py-3.5 text-[#14532D] font-medium">
-            Đã điền sẵn phiếu quan sát, dàn ý và bản nháp tả bà nội để em trải nghiệm nhanh cả 5 bước!
-          </div>
-        </div>
       )}
 
-      {/* Active Step Content */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-7 sm:py-9">
-        {project.currentStep === 1 && (
-          <Step1Observe
-            project={project}
-            onSelectPerson={handleSelectPerson}
-            onChangeCustomPerson={handleChangeCustomPerson}
-            onAddNote={handleAddNote}
-            onRemoveNote={handleRemoveNote}
-            onAskMemoryPrompt={handleAskMemoryPrompt}
-            loadingBox={loadingBox}
-            errorMsg={errorMsg}
-            onNextStep={() => goToStep(2)}
+      {/* Main Content */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {routeArea === 'student' ? (
+          studentLoading ? (
+            <div className="py-20 flex flex-col items-center justify-center gap-3 text-[#4B6358]">
+              <Loader2 className="w-8 h-8 animate-spin text-[#15803D]" aria-hidden="true" />
+              <p>Đang mở lớp học của em…</p>
+            </div>
+          ) : !studentProfile ? (
+            <StudentLogin
+              onLoggedIn={() => void loadStudentSession()}
+              onGoTeacher={() => navigate('teacher')}
+              databaseConfigured={authConfig.databaseConfigured}
+            />
+          ) : activeAssignmentId ? (
+            <StudentWorkspace
+              assignmentId={activeAssignmentId}
+              onBackHome={() => {
+                setActiveAssignmentId(null);
+                void loadStudentSession();
+              }}
+              onSessionExpired={handleLogout}
+            />
+          ) : (
+            <StudentHome
+              student={studentProfile}
+              assignments={studentAssignments}
+              onOpenAssignment={(id) => setActiveAssignmentId(id)}
+            />
+          )
+        ) : teacherLoading ? (
+          <div className="py-20 flex flex-col items-center justify-center gap-3 text-[#4B6358]">
+            <Loader2 className="w-8 h-8 animate-spin text-[#0369A1]" aria-hidden="true" />
+            <p>Đang tải trang Giáo viên…</p>
+          </div>
+        ) : !teacherProfile ? (
+          <TeacherLogin
+            onLoggedIn={() => void loadTeacherSession()}
+            onGoStudent={() => navigate('student')}
+            databaseConfigured={authConfig.databaseConfigured}
+            googleConfigured={authConfig.googleConfigured}
+            ltiEnabled={Boolean(authConfig.ltiEnabled)}
           />
-        )}
-
-        {project.currentStep === 2 && (
-          <Step2Outline
-            project={project}
-            onUpdateOutline={handleUpdateOutline}
-            onSendChat={handleSendChat}
-            onFetchWordBank={handleFetchWordBank}
-            onToggleSavedWord={handleToggleSavedWord}
-            onCheckOutline={handleCheckOutline}
-            loadingChat={loadingChat}
-            loadingWords={loadingWords}
-            loadingCheck={loadingCheck}
-            errorMsg={errorMsg}
-            onPrevStep={() => goToStep(1)}
-            onNextStep={() => goToStep(3)}
-          />
-        )}
-
-        {project.currentStep === 3 && (
-          <Step3Write
-            project={project}
-            onChangeDraft={handleChangeDraft}
-            onLockDraft={handleLockDraft}
-            onPrevStep={() => goToStep(2)}
-            onNextStep={() => goToStep(4)}
-          />
-        )}
-
-        {project.currentStep === 4 && (
-          <Step4Revise
-            project={project}
-            onChangeRevised={handleChangeRevised}
-            onUpdateSelfCheck={handleUpdateSelfCheck}
-            onRequestEssayReview={handleRequestEssayReview}
-            loadingReview={loadingReview}
-            errorMsg={errorMsg}
-            onPrevStep={() => goToStep(3)}
-            onNextStep={() => goToStep(5)}
-          />
-        )}
-
-        {project.currentStep === 5 && (
-          <Step5Share
-            project={project}
-            onUpdateRating={handleUpdateRating}
-            onPrevStep={() => goToStep(4)}
-            onStartNewEssay={handleStartNewEssay}
+        ) : (
+          <TeacherDashboard
+            teacher={teacherProfile}
+            classes={teacherClasses}
+            onRefreshClasses={loadTeacherSession}
+            onSessionExpired={handleLogout}
           />
         )}
       </main>
-
-      <footer className="no-print border-t border-[#DDE7E2] bg-white py-5">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[16px] text-[#4B6358]">
-          <p>Bạn Viết · Đồng hành tập làm văn tả người lớp 5</p>
-          <p>Bài làm tự lưu trên trình duyệt mỗi 5 giây</p>
-        </div>
-      </footer>
-
-      <FeedbackHistoryDrawer
-        isOpen={historyOpen && project.currentStep !== 3}
-        onClose={() => setHistoryOpen(false)}
-        history={project.feedbackHistory}
-      />
 
       <OfflineIndicator />
     </div>

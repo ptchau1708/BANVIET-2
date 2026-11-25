@@ -78,7 +78,20 @@ export const FeedbackHistoryDrawer: React.FC<FeedbackHistoryDrawerProps> = ({
                 className="rounded-2xl border border-[#DDE7E2] bg-[#F8FBF9] p-5 space-y-2.5"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 text-[16px] text-[#4B6358]">
-                  <span className="font-medium text-[#15803D]">{STEP_LABELS[item.step]}</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium text-[#15803D]">{STEP_LABELS[item.step]}</span>
+                    {item.nguon && (
+                      <span
+                        className={`text-[13px] font-bold px-2 py-0.5 rounded-md ${
+                          item.nguon === 'kho'
+                            ? 'bg-[#FEF3C7] text-[#92400E]'
+                            : 'bg-[#E0F2FE] text-[#075985]'
+                        }`}
+                      >
+                        {item.nguon === 'kho' ? 'Kho từ' : 'AI'}
+                      </span>
+                    )}
+                  </div>
                   <span className="inline-flex items-center gap-1.5 tabular-nums">
                     <Clock className="w-4 h-4" aria-hidden="true" />
                     {formatTime(item.timestamp)}

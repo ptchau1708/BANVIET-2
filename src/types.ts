@@ -31,6 +31,15 @@ export interface OutlineData {
   ketBai: string;
 }
 
+export type SuggestionSource = 'ai' | 'kho';
+
+export interface KhoTuStats {
+  mo_kho: number;
+  goi_y_tu_kho: number;
+  tu_da_luu: number;
+  auto_fallback?: number;
+}
+
 export interface OutlineCheckResult {
   du_3_phan: boolean;
   so_chi_tiet_ngoai_hinh: number;
@@ -38,6 +47,8 @@ export interface OutlineCheckResult {
   phan_con_thieu: string[];
   cau_hoi_goi_y: string[];
   checkedAt: string;
+  nguon?: SuggestionSource;
+  thongBao?: string;
 }
 
 export interface ChatMessage {
@@ -45,6 +56,8 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   timestamp: string;
+  nguon?: SuggestionSource;
+  thongBao?: string;
 }
 
 export type SuggestionCategory =
@@ -98,6 +111,7 @@ export interface FeedbackHistoryItem {
   id: string;
   step: 1 | 2 | 4;
   kind: FeedbackHistoryKind;
+  nguon?: SuggestionSource;
   title: string;
   promptSummary?: string;
   responseSummary: string;
@@ -112,13 +126,20 @@ export interface WritingProject {
   customPersonLabel: string;
   observations: ObservationNotes;
   observationPrompts: Partial<Record<ObservationBoxKey, string>>;
+  observationPromptMeta?: Partial<
+    Record<ObservationBoxKey, { nguon: SuggestionSource; thongBao?: string }>
+  >;
   outline: OutlineData;
   outlineSyncedFromStep1: boolean;
   outlineCheck: OutlineCheckResult | null;
   chatMessages: ChatMessage[];
   suggestedWords: string[];
   suggestedWordTopic: string;
+  suggestedWordSource?: SuggestionSource;
+  suggestedWordNotice?: string | null;
   savedWords: string[];
+  khoTuStats: KhoTuStats;
+  seenKhoQuestions: string[];
   draftText: string;
   draftLocked: boolean;
   draftLockedAt: string | null;

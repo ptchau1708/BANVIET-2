@@ -1,10 +1,19 @@
 import React, { useState } from 'react';
-import { ArrowRight, HelpCircle, Loader2, Plus, ShieldCheck, Trash2 } from 'lucide-react';
+import {
+  ArrowRight,
+  BookOpen,
+  HelpCircle,
+  Loader2,
+  Plus,
+  ShieldCheck,
+  Trash2,
+} from 'lucide-react';
 import {
   ObservationBoxKey,
   PersonChoice,
   WritingProject,
 } from '../types';
+import { AI_LIMIT_REACHED_LABEL } from '../utils/khoTuNgu';
 import { getDisplayPersonName, isStep1Complete } from '../utils/writingLogic';
 import { MascotSpeech } from './MascotAvatar';
 
@@ -56,11 +65,15 @@ const OBSERVATION_BOXES: BoxConfig[] = [
 
 interface Step1ObserveProps {
   project: WritingProject;
+  aiEnabled?: boolean;
+  aiRemainingToday?: number;
+  aiAvailableForHints?: boolean;
   onSelectPerson: (choice: PersonChoice) => void;
   onChangeCustomPerson: (label: string) => void;
   onAddNote: (box: ObservationBoxKey, note: string) => void;
   onRemoveNote: (box: ObservationBoxKey, index: number) => void;
   onAskMemoryPrompt: (box: ObservationBoxKey, boxTitle: string) => Promise<void>;
+  onOpenKhoTu: (box: ObservationBoxKey, boxTitle: string) => void;
   loadingBox: ObservationBoxKey | null;
   errorMsg: string | null;
   onNextStep: () => void;
@@ -68,11 +81,15 @@ interface Step1ObserveProps {
 
 export const Step1Observe: React.FC<Step1ObserveProps> = ({
   project,
+  aiEnabled = true,
+  aiRemainingToday = 0,
+  aiAvailableForHints = true,
   onSelectPerson,
   onChangeCustomPerson,
   onAddNote,
   onRemoveNote,
   onAskMemoryPrompt,
+  onOpenKhoTu,
   loadingBox,
   errorMsg,
   onNextStep,
@@ -86,6 +103,7 @@ export const Step1Observe: React.FC<Step1ObserveProps> = ({
 
   const personLabel = getDisplayPersonName(project);
   const canProceed = isStep1Complete(project);
+  const canAskAi = aiEnabled && aiAvailableForHints && aiRemainingToday > 0;
 
   const handleSubmitNote = (box: ObservationBoxKey, e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +125,9 @@ export const Step1Observe: React.FC<Step1ObserveProps> = ({
             </span>
           </p>
           <p className="mt-2 text-[#334155]">
-            Mình sẽ đặt câu hỏi gợi nhớ để em tự tìm ra những chi tiết thật hay và tự viết nên bài văn của riêng mình nhé!
+            {canAskAi
+              ? 'Em có thể bấm “Hỏi Bạn Viết” để nhận câu hỏi gợi nhớ hoặc bấm “Xem kho từ” bất cứ lúc nào (không tốn lượt AI) nhé!'
+              : 'Em hãy quan sát thật kỹ và mở “Xem kho từ” bất cứ lúc nào để tìm từ ngữ gợi tả và câu hỏi gợi nhớ nhé!'}
           </p>
         </MascotSpeech>
       </section>
@@ -191,6 +211,7 @@ export const Step1Observe: React.FC<Step1ObserveProps> = ({
           {OBSERVATION_BOXES.map((box) => {
             const items = project.observations[box.key];
             const aiPrompt = project.observationPrompts[box.key];
+            const promptMeta = project.observationPromptMeta?.[box.key];
             const isLoading = loadingBox === box.key;
 
             return (
@@ -199,29 +220,70 @@ export const Step1Observe: React.FC<Step1ObserveProps> = ({
                 className="rounded-2xl bg-white border border-[#DDE7E2] p-5 sm:p-6 flex flex-col justify-between gap-5"
               >
                 <div className="space-y-4">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-3">
                     <div>
                       <h3 className="text-xl font-bold text-[#1C2A24]">{box.title}</h3>
                       <p className="text-[16px] text-[#4B6358] mt-0.5">{box.hint}</p>
                     </div>
-                    <button
-                      type="button"
-                      disabled={isLoading || !personLabel}
-                      onClick={() => onAskMemoryPrompt(box.key, box.title)}
-                      className="inline-flex items-center gap-2 min-h-[44px] px-4 py-2 rounded-xl bg-[#E0F2FE] text-[#075985] font-semibold hover:bg-[#BAE6FD] disabled:opacity-50 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-                      ) : (
-                        <HelpCircle className="w-5 h-5" aria-hidden="true" />
-                      )}
-                      <span>Gợi ý cho em</span>
-                    </button>
+
+                    {/* Two buttons side-by-side: "Hỏi Bạn Viết" (AI + quota) & "Xem kho từ" (always active) */}
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <button
+                        type="button"
+                        disabled={!canAskAi || isLoading || !personLabel}
+                        onClick={() => onAskMemoryPrompt(box.key, box.title)}
+                        aria-label={`Hỏi Bạn Viết cho ô ${box.title}`}
+                        className={`inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-xl text-[15px] font-semibold transition-colors ${
+                          canAskAi
+                            ? 'bg-[#E0F2FE] text-[#075985] hover:bg-[#BAE6FD] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
+                            : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] opacity-75 cursor-not-allowed'
+                        }`}
+                      >
+                        {isLoading ? (
+                          <Loader2 className="w-4 h-4 animate-spin shrink-0" aria-hidden="true" />
+                        ) : (
+                          <HelpCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        )}
+                        {canAskAi ? (
+                          <span>
+                            Hỏi Bạn Viết{' '}
+                            <span className="font-normal tabular-nums">
+                              (còn {aiRemainingToday} lượt)
+                            </span>
+                          </span>
+                        ) : (
+                          <span>{AI_LIMIT_REACHED_LABEL}</span>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => onOpenKhoTu(box.key, box.title)}
+                        aria-label={`Xem kho từ cho ô ${box.title}`}
+                        className="inline-flex items-center gap-2 min-h-[44px] px-3.5 py-2 rounded-xl bg-[#ECFDF5] text-[#14532D] border border-[#86EFAC] text-[15px] font-semibold hover:bg-[#DCFCE7] transition-colors whitespace-nowrap cursor-pointer"
+                      >
+                        <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
+                        <span>Xem kho từ</span>
+                      </button>
+                    </div>
                   </div>
 
                   {aiPrompt && (
-                    <MascotSpeech title="Bạn Viết hỏi gợi nhớ" size="sm">
+                    <MascotSpeech
+                      title={
+                        promptMeta?.nguon === 'kho'
+                          ? 'Gợi ý từ kho từ ngữ'
+                          : 'Bạn Viết hỏi gợi nhớ'
+                      }
+                      tone={promptMeta?.nguon === 'kho' ? 'warm' : 'calm'}
+                      size="sm"
+                    >
                       <p>{aiPrompt}</p>
+                      {promptMeta?.thongBao && (
+                        <p className="mt-1.5 text-[14px] text-[#64748B] italic">
+                          {promptMeta.thongBao}
+                        </p>
+                      )}
                     </MascotSpeech>
                   )}
 

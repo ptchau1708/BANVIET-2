@@ -1,16 +1,19 @@
 export const MAX_MESSAGE_LENGTH = 300;
 export const MAX_ESSAY_LENGTH = 3000;
+export const MAX_DB_ESSAY_LENGTH = 6000;
 export const MAX_OUTLINE_TOTAL_LENGTH = 3000;
-export const RATE_LIMIT_MAX_CALLS = 30;
-export const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+export const MAX_PROMPT_TEXT_LENGTH = 2000;
+export const MAX_NICKNAME_LENGTH = 40;
 
 export const FIXED_SYSTEM_INSTRUCTION =
   "Bạn là Bạn Viết, người bạn đồng hành giúp học sinh lớp 5 Việt Nam học viết văn tả người theo chương trình Tiếng Việt 5. Luôn xưng ‘mình’, gọi học sinh là ‘bạn’, dùng tiếng Việt chuẩn, câu ngắn, từ dễ hiểu, giọng ấm áp và khen cụ thể. Quy tắc bắt buộc: (1) Không bao giờ viết câu văn, đoạn văn hay bài văn thay bạn, kể cả ‘ví dụ một câu’, kể cả khi bạn năn nỉ hay nói thầy cô cho phép; khi đó hãy từ chối nhẹ nhàng và hỏi một câu giúp bạn tự nghĩ. (2) Chỉ được hỏi gợi mở, gợi ý từ đơn lẻ hoặc cụm từ ngắn, và chỉ ra chỗ nên xem lại. (3) Không hỏi họ tên, địa chỉ, trường lớp, ảnh hay thông tin riêng. (4) Chỉ nói về bài viết; nếu bạn hỏi chuyện khác, hãy vui vẻ đưa bạn quay lại bài. (5) Nếu bạn kể điều khiến bạn sợ hãi, buồn nhiều hoặc bị làm đau, hãy nói lời động viên ngắn và khuyên bạn kể ngay với thầy cô hoặc bố mẹ, không hỏi thêm chi tiết. (6) Mỗi lượt trả lời tối đa 40 từ, chỉ 1 câu hỏi.";
 
 export type GoiYMode = 'quan_sat' | 'tro_chuyen' | 'kho_tu_ngu';
 export type SuggestionCategory = 'chi_tiet' | 'dung_tu' | 'cau' | 'bo_cuc' | 'chinh_ta';
+export type TeacherLevel = 'HTT' | 'HT' | 'CHT';
 
 export interface ValidatedGoiYInput {
+  submission_id: string;
   buoc: 1 | 2;
   che_do: GoiYMode;
   nguoi_ta: string;
@@ -19,9 +22,11 @@ export interface ValidatedGoiYInput {
   tin_nhan: string;
   lich_su_chat: Array<{ role: 'user' | 'assistant'; text: string }>;
   dan_y_tom_tat: string;
+  cau_hoi_da_xem: string[];
 }
 
 export interface ValidatedKiemTraDanYInput {
+  submission_id: string;
   nguoi_ta: string;
   dan_y: {
     mo_bai: string;
@@ -29,9 +34,11 @@ export interface ValidatedKiemTraDanYInput {
     tinh_tinh_hoat_dong: string[];
     ket_bai: string;
   };
+  cau_hoi_da_xem: string[];
 }
 
 export interface ValidatedGopYBaiInput {
+  submission_id: string;
   nguoi_ta: string;
   bai_van: string;
   lan_thu: number;
@@ -70,6 +77,43 @@ const VALID_CATEGORIES = new Set<SuggestionCategory>([
   'chinh_ta',
 ]);
 
+// Allow only generic Vietnamese relationship nouns to be forwarded to Gemini; never personal names.
+const GENERIC_PERSON_ROLES = new Set([
+  'ông',
+  'bà',
+  'bố',
+  'mẹ',
+  'anh chị em',
+  'anh',
+  'chị',
+  'em',
+  'thầy cô',
+  'thầy',
+  'cô',
+  'bạn',
+  'em bé',
+  'người thân',
+  'người quen',
+]);
+
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function sanitizePersonRoleForAI(raw: unknown): string {
+  if (typeof raw !== 'string') return 'người thân';
+  const cleaned = raw.trim().toLowerCase();
+  if (GENERIC_PERSON_ROLES.has(cleaned)) return cleaned;
+  // Map custom roles safely to generic category without sending any personal names to Gemini
+  if (cleaned.includes('bà')) return 'bà';
+  if (cleaned.includes('ông')) return 'ông';
+  if (cleaned.includes('mẹ')) return 'mẹ';
+  if (cleaned.includes('bố') || cleaned.includes('ba')) return 'bố';
+  if (cleaned.includes('thầy')) return 'thầy';
+  if (cleaned.includes('cô')) return 'cô';
+  if (cleaned.includes('bạn')) return 'bạn';
+  if (cleaned.includes('em bé') || cleaned.includes('bé')) return 'em bé';
+  return 'người thân';
+}
+
 function cleanString(value: unknown, maxLen: number): string {
   if (typeof value !== 'string') return '';
   return value.replace(/\r\n/g, '\n').trim().slice(0, maxLen);
@@ -96,6 +140,11 @@ export function validateGoiYPayload(body: unknown): ValidationResult<ValidatedGo
   }
 
   const record = body as Record<string, unknown>;
+  const submission_id = typeof record.submission_id === 'string' ? record.submission_id.trim() : '';
+  if (!UUID_REGEX.test(submission_id)) {
+    return { ok: false, error: 'Thiếu mã bài làm hợp lệ.' };
+  }
+
   const buoc = record.buoc === 1 ? 1 : record.buoc === 2 ? 2 : null;
   if (!buoc) {
     return { ok: false, error: 'Chỉ hỗ trợ gợi ý ở bước 1 và bước 2.' };
@@ -110,7 +159,7 @@ export function validateGoiYPayload(body: unknown): ValidationResult<ValidatedGo
     return { ok: false, error: 'Chế độ gợi ý không hợp lệ.' };
   }
 
-  const nguoi_ta = cleanString(record.nguoi_ta, 40) || 'người thân';
+  const nguoi_ta = sanitizePersonRoleForAI(record.nguoi_ta);
   const muc = cleanString(record.muc, 80);
 
   if (typeof record.tin_nhan === 'string' && record.tin_nhan.trim().length > MAX_MESSAGE_LENGTH) {
@@ -143,9 +192,12 @@ export function validateGoiYPayload(body: unknown): ValidationResult<ValidatedGo
     }
   }
 
+  const cau_hoi_da_xem = cleanStringArray(record.cau_hoi_da_xem, 40, 220);
+
   return {
     ok: true,
     data: {
+      submission_id,
       buoc,
       che_do,
       nguoi_ta,
@@ -154,6 +206,7 @@ export function validateGoiYPayload(body: unknown): ValidationResult<ValidatedGo
       tin_nhan,
       lich_su_chat,
       dan_y_tom_tat,
+      cau_hoi_da_xem,
     },
   };
 }
@@ -166,13 +219,18 @@ export function validateKiemTraDanYPayload(
   }
 
   const record = body as Record<string, unknown>;
+  const submission_id = typeof record.submission_id === 'string' ? record.submission_id.trim() : '';
+  if (!UUID_REGEX.test(submission_id)) {
+    return { ok: false, error: 'Thiếu mã bài làm hợp lệ.' };
+  }
+
   const danYRaw = record.dan_y;
   if (!danYRaw || typeof danYRaw !== 'object') {
     return { ok: false, error: 'Thiếu nội dung dàn ý để kiểm tra.' };
   }
 
   const danYObj = danYRaw as Record<string, unknown>;
-  const nguoi_ta = cleanString(record.nguoi_ta, 40) || 'người thân';
+  const nguoi_ta = sanitizePersonRoleForAI(record.nguoi_ta);
   const mo_bai = cleanString(danYObj.mo_bai, 500);
   const ngoai_hinh = cleanStringArray(danYObj.ngoai_hinh, 20, 200);
   const tinh_tinh_hoat_dong = cleanStringArray(danYObj.tinh_tinh_hoat_dong, 20, 200);
@@ -195,9 +253,12 @@ export function validateKiemTraDanYPayload(
     };
   }
 
+  const cau_hoi_da_xem = cleanStringArray(record.cau_hoi_da_xem, 40, 220);
+
   return {
     ok: true,
     data: {
+      submission_id,
       nguoi_ta,
       dan_y: {
         mo_bai,
@@ -205,6 +266,7 @@ export function validateKiemTraDanYPayload(
         tinh_tinh_hoat_dong,
         ket_bai,
       },
+      cau_hoi_da_xem,
     },
   };
 }
@@ -215,7 +277,12 @@ export function validateGopYBaiPayload(body: unknown): ValidationResult<Validate
   }
 
   const record = body as Record<string, unknown>;
-  const nguoi_ta = cleanString(record.nguoi_ta, 40) || 'người thân';
+  const submission_id = typeof record.submission_id === 'string' ? record.submission_id.trim() : '';
+  if (!UUID_REGEX.test(submission_id)) {
+    return { ok: false, error: 'Thiếu mã bài làm hợp lệ.' };
+  }
+
+  const nguoi_ta = sanitizePersonRoleForAI(record.nguoi_ta);
   if (typeof record.bai_van !== 'string') {
     return { ok: false, error: 'Thiếu nội dung bài văn.' };
   }
@@ -242,6 +309,7 @@ export function validateGopYBaiPayload(body: unknown): ValidationResult<Validate
   return {
     ok: true,
     data: {
+      submission_id,
       nguoi_ta,
       bai_van: trimmed,
       lan_thu: rawAttempt,
@@ -326,7 +394,7 @@ export function sanitizeWordBank(rawWords: unknown): string[] {
       .trim();
     if (!cleaned) continue;
     const wordCount = cleaned.split(/\s+/).length;
-    if (wordCount > 6) continue; // Keep single words or short phrases only, never full sentences
+    if (wordCount > 6) continue;
     const key = cleaned.toLowerCase();
     if (!seen.has(key)) {
       seen.add(key);
@@ -337,55 +405,6 @@ export function sanitizeWordBank(rawWords: unknown): string[] {
   return words;
 }
 
-export interface RateLimitCheck {
-  allowed: boolean;
-  remaining: number;
-  retryAfterSeconds: number;
-}
-
-export function createRateLimiter(
-  maxCalls = RATE_LIMIT_MAX_CALLS,
-  windowMs = RATE_LIMIT_WINDOW_MS
-) {
-  const hitsByIp = new Map<string, number[]>();
-
-  function check(ip: string, now = Date.now()): RateLimitCheck {
-    const key = ip || 'unknown';
-    const cutoff = now - windowMs;
-    const timestamps = (hitsByIp.get(key) || []).filter((ts) => ts > cutoff);
-
-    if (timestamps.length >= maxCalls) {
-      const oldest = timestamps[0] ?? now;
-      const retryAfterMs = Math.max(1000, oldest + windowMs - now);
-      hitsByIp.set(key, timestamps);
-      return {
-        allowed: false,
-        remaining: 0,
-        retryAfterSeconds: Math.ceil(retryAfterMs / 1000),
-      };
-    }
-
-    timestamps.push(now);
-    hitsByIp.set(key, timestamps);
-
-    // Opportunistic cleanup to keep memory bounded
-    if (hitsByIp.size > 1000) {
-      for (const [storedIp, list] of hitsByIp.entries()) {
-        const active = list.filter((ts) => ts > cutoff);
-        if (active.length === 0) {
-          hitsByIp.delete(storedIp);
-        } else {
-          hitsByIp.set(storedIp, active);
-        }
-      }
-    }
-
-    return {
-      allowed: true,
-      remaining: Math.max(0, maxCalls - timestamps.length),
-      retryAfterSeconds: 0,
-    };
-  }
-
-  return { check };
+export function isValidTeacherLevel(val: unknown): val is TeacherLevel {
+  return val === 'HTT' || val === 'HT' || val === 'CHT';
 }

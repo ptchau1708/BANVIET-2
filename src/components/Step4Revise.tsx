@@ -2,11 +2,13 @@ import React, { useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   Check,
   Eye,
   GitCompare,
   Loader2,
   MessageSquareHeart,
+  Users,
   X,
 } from 'lucide-react';
 import {
@@ -15,6 +17,12 @@ import {
   SuggestionCategory,
   WritingProject,
 } from '../types';
+import {
+  AI_LIMIT_REACHED_LABEL,
+  STEP4_PEER_TEACHER_HINT,
+  STEP4_TOMORROW_NOTICE,
+  mapSelfCheckKeyToKhoHelper,
+} from '../utils/khoTuNgu';
 import {
   MAX_ESSAY_CHARS,
   MAX_ESSAY_REVIEWS,
@@ -61,9 +69,15 @@ const CATEGORY_LABELS: Record<SuggestionCategory, string> = {
 
 interface Step4ReviseProps {
   project: WritingProject;
+  aiEnabled?: boolean;
+  aiRemainingToday?: number;
+  aiAvailableForStep4?: boolean;
+  step4UnavailableNotice?: string | null;
   onChangeRevised: (nextText: string) => void;
   onUpdateSelfCheck: (key: keyof SelfCheckState, value: SelfCheckAnswer) => void;
   onRequestEssayReview: () => Promise<void>;
+  onOpenKhoTuForSelfCheck: (key: keyof SelfCheckState) => void;
+  onOpenKhoTuGeneral: () => void;
   loadingReview: boolean;
   errorMsg: string | null;
   onPrevStep: () => void;
@@ -72,9 +86,15 @@ interface Step4ReviseProps {
 
 export const Step4Revise: React.FC<Step4ReviseProps> = ({
   project,
+  aiEnabled = true,
+  aiRemainingToday = 0,
+  aiAvailableForStep4 = true,
+  step4UnavailableNotice = null,
   onChangeRevised,
   onUpdateSelfCheck,
   onRequestEssayReview,
+  onOpenKhoTuForSelfCheck,
+  onOpenKhoTuGeneral,
   loadingReview,
   errorMsg,
   onPrevStep,
@@ -89,6 +109,8 @@ export const Step4Revise: React.FC<Step4ReviseProps> = ({
       ? project.essayReviews[project.essayReviews.length - 1]
       : null;
   const remainingReviews = Math.max(0, MAX_ESSAY_REVIEWS - project.essayReviews.length);
+  const aiQuotaAvailable =
+    aiEnabled && aiAvailableForStep4 && aiRemainingToday > 0 && !step4UnavailableNotice;
 
   const diffResult = useMemo(
     () => computeWordDiff(project.draftText, project.revisedText),
@@ -253,34 +275,79 @@ export const Step4Revise: React.FC<Step4ReviseProps> = ({
           </section>
         </div>
 
-        {/* RIGHT: Self-check table + Bạn Viết essay review */}
+        {/* RIGHT: Bạn Viết essay review + 6-item Self-Check table linked to Word Bank */}
         <aside className="lg:col-span-5 space-y-6">
-          {/* Bạn Viết review panel */}
+          {/* Bạn Viết review panel (always shown so out-of-quota guidance is clear) */}
           <section className="rounded-2xl bg-white border border-[#DDE7E2] p-5 sm:p-6 space-y-4">
             <div className="space-y-1">
               <h2 className="text-xl font-bold text-[#1C2A24]">Nhờ Bạn Viết đọc giúp</h2>
-              <p className="text-[16px] text-[#4B6358] tabular-nums">
-                Còn <strong className="text-[#15803D]">{remainingReviews}/{MAX_ESSAY_REVIEWS}</strong> lượt cho bài văn này. Bạn Viết chỉ khen cụ thể và hỏi gợi mở, không viết lại câu hộ em.
-              </p>
+              {aiQuotaAvailable ? (
+                <p className="text-[16px] text-[#4B6358] tabular-nums">
+                  Còn <strong className="text-[#15803D]">{remainingReviews}/{MAX_ESSAY_REVIEWS}</strong> lượt cho bài văn này (hôm nay em còn {aiRemainingToday} lượt AI). Bạn Viết chỉ khen cụ thể và hỏi gợi mở, không viết lại câu hộ em.
+                </p>
+              ) : (
+                <p className="text-[16px] text-[#4B6358]">
+                  Bạn Viết đang nghỉ lúc này. Em tự rà bài bằng Bảng kiểm 6 câu và kho từ ngữ bên dưới nhé!
+                </p>
+              )}
             </div>
 
-            <button
-              type="button"
-              disabled={loadingReview || remainingReviews <= 0 || !project.revisedText.trim()}
-              onClick={onRequestEssayReview}
-              className="w-full inline-flex items-center justify-center gap-2 min-h-[52px] px-5 py-3 rounded-xl bg-[#0369A1] text-white font-bold hover:bg-[#075985] disabled:bg-[#CBD5E1] disabled:text-[#64748B] disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              {loadingReview ? (
-                <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
-              ) : (
-                <MessageSquareHeart className="w-5 h-5" aria-hidden="true" />
-              )}
-              <span>
-                {remainingReviews > 0
-                  ? 'Nhờ Bạn Viết đọc giúp'
-                  : 'Đã dùng đủ 3 lượt đọc giúp'}
-              </span>
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2.5">
+              <button
+                type="button"
+                disabled={
+                  !aiQuotaAvailable ||
+                  loadingReview ||
+                  remainingReviews <= 0 ||
+                  !project.revisedText.trim()
+                }
+                onClick={onRequestEssayReview}
+                className={`flex-1 inline-flex items-center justify-center gap-2 min-h-[50px] px-4 py-2.5 rounded-xl font-bold transition-colors ${
+                  aiQuotaAvailable && remainingReviews > 0
+                    ? 'bg-[#0369A1] text-white hover:bg-[#075985] disabled:bg-[#CBD5E1] disabled:text-[#64748B] cursor-pointer'
+                    : 'bg-[#F1F5F9] text-[#64748B] border border-[#E2E8F0] opacity-80 cursor-not-allowed'
+                }`}
+              >
+                {loadingReview ? (
+                  <Loader2 className="w-5 h-5 animate-spin shrink-0" aria-hidden="true" />
+                ) : (
+                  <MessageSquareHeart className="w-5 h-5 shrink-0" aria-hidden="true" />
+                )}
+                <span>
+                  {!aiQuotaAvailable
+                    ? AI_LIMIT_REACHED_LABEL
+                    : remainingReviews > 0
+                      ? `Hỏi Bạn Viết (còn ${aiRemainingToday} lượt)`
+                      : 'Đã dùng đủ 3 lượt đọc giúp'}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onOpenKhoTuGeneral}
+                className="inline-flex items-center justify-center gap-2 min-h-[50px] px-4 py-2.5 rounded-xl bg-[#15803D] text-white font-semibold hover:bg-[#166534] transition-colors whitespace-nowrap cursor-pointer"
+              >
+                <BookOpen className="w-5 h-5 shrink-0" aria-hidden="true" />
+                <span>Xem kho từ</span>
+              </button>
+            </div>
+
+            {/* Step 4 fallback guidance when AI cannot read the essay */}
+            {!aiQuotaAvailable && (
+              <div className="rounded-xl bg-[#FFFBEB] border border-[#FDE68A] p-4 space-y-2.5 text-[15px] text-[#78350F]">
+                <p className="font-bold text-[#92400E] flex items-center gap-2">
+                  <Users className="w-5 h-5 shrink-0" aria-hidden="true" />
+                  <span>Tự kiểm tra bài cùng Bảng kiểm & bạn học</span>
+                </p>
+                <p>
+                  • Đánh dấu từng câu trong <strong>Bảng kiểm 6 câu</strong> ngay bên dưới: câu nào em chọn <strong>“Chưa”</strong> sẽ hiện nút mở đúng phần trong kho từ để bổ sung.
+                </p>
+                <p>• {STEP4_PEER_TEACHER_HINT}</p>
+                <p className="font-semibold text-[#92400E]">
+                  • {step4UnavailableNotice || STEP4_TOMORROW_NOTICE}
+                </p>
+              </div>
+            )}
 
             {latestReview && (
               <div className="space-y-4 pt-1">
@@ -328,8 +395,14 @@ export const Step4Revise: React.FC<Step4ReviseProps> = ({
             )}
           </section>
 
-          {/* 6-item Self-Check Table (Có / Chưa) */}
-          <section className="rounded-2xl bg-white border border-[#DDE7E2] p-5 sm:p-6 space-y-4">
+          {/* 6-item Self-Check Table (Có / Chưa) — auto-links every "Chưa" to matching Word Bank section */}
+          <section
+            className={`rounded-2xl bg-white p-5 sm:p-6 space-y-4 ${
+              !aiQuotaAvailable
+                ? 'border-2 border-[#F59E0B] shadow-sm'
+                : 'border border-[#DDE7E2]'
+            }`}
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-xl font-bold text-[#1C2A24]">Bảng kiểm tự đánh dấu</h2>
               <span className="text-[16px] text-[#4B6358] tabular-nums">
@@ -340,6 +413,9 @@ export const Step4Revise: React.FC<Step4ReviseProps> = ({
             <div className="divide-y divide-[#EDF3EF]">
               {SELF_CHECK_QUESTIONS.map((q) => {
                 const val = project.selfCheck[q.key];
+                const helper =
+                  val === 'chua' ? mapSelfCheckKeyToKhoHelper(q.key, personLabel) : null;
+
                 return (
                   <div
                     key={q.key}
@@ -374,6 +450,27 @@ export const Step4Revise: React.FC<Step4ReviseProps> = ({
                         <span>Chưa</span>
                       </button>
                     </div>
+
+                    {helper && (
+                      <div className="rounded-xl bg-[#FFFBEB] border border-[#FDE68A] p-3.5 space-y-2.5">
+                        <p className="text-[15px] text-[#78350F]">{helper.hint}</p>
+                        {helper.checklistTips && helper.checklistTips.length > 0 && (
+                          <ul className="list-disc list-inside text-[14px] text-[#78350F] space-y-1">
+                            {helper.checklistTips.map((tip, idx) => (
+                              <li key={idx}>{tip}</li>
+                            ))}
+                          </ul>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onOpenKhoTuForSelfCheck(q.key)}
+                          className="inline-flex items-center gap-2 min-h-[40px] px-3.5 py-1.5 rounded-xl bg-[#15803D] text-white text-[15px] font-semibold hover:bg-[#166534] transition-colors cursor-pointer"
+                        >
+                          <BookOpen className="w-4 h-4 shrink-0" aria-hidden="true" />
+                          <span>{helper.buttonLabel}</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
